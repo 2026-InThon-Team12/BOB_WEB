@@ -385,3 +385,19 @@
 @media(max-width:760px){#app .reflection-card{padding:22px 18px}#app .answered-badge{max-width:150px}#app .report-month{justify-content:center}}
 
 .category-hint{display:block;min-height:2.8em;line-height:1.4;}
+#app .registration-layout{display:grid;grid-template-columns:minmax(260px,.85fr) minmax(0,1.35fr);gap:clamp(28px,4vw,64px);align-items:start;padding-top:24px}
+#app .registration-methods{padding:16px 0;position:sticky;top:36px}
+#app .registration-methods h1{font-size:clamp(25px,2.4vw,32px);line-height:1.35;margin:14px 0 18px;letter-spacing:-1px}
+#app .registration-methods p{margin:0 0 32px;color:var(--muted);font-size:15px}
+#app .registration-options{display:grid;gap:8px;margin-bottom:32px}
+#app .registration-options button{width:100%;justify-content:space-between;text-align:left;background:transparent;border-color:transparent;padding:16px 12px;font-size:15px;font-weight:500;gap:16px}
+#app .registration-options button[aria-pressed=true]{background:var(--gold);color:var(--ink);font-weight:700}
+#app .registration-options button:hover{background:#FFF0CC;filter:none}
+#app .registration-options button[aria-pressed=true]:hover{background:var(--gold)}
+#app .registration-methods>small{display:block;color:var(--muted);font-size:12px;line-height:1.8;padding-left:12px}
+#app #registration-content{min-width:0}
+#app .registration-screen{margin:0;padding:28px}
+#app .registration-screen h2{margin-top:0;font-size:22px}
+#app .registration-screen input[type=file]{white-space:normal;max-width:100%}
+#app .registration-screen #image-import-status p{overflow-wrap:anywhere}
+@media(max-width:900px){#app .registration-layout{grid-template-columns:1fr;gap:24px;padding-top:0}#app .registration-methods{position:static;padding:0}#app .registration-methods p{margin-bottom:20px}#app .registration-options{margin-bottom:16px}#app .registration-screen{padding:22px 18px}}
