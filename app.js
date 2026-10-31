@@ -117,9 +117,35 @@ function goalCard(home=false) {
 }
 function goalImageForm() {const g=state.goals.find(g=>g.active);return g?`<form id="goal-image-form" novalidate>${field('image','현재 목표 상품 이미지','file','','accept="image/png,image/jpeg,image/webp"')}<p>2MB 이하 · 이 브라우저에만 저장해요.</p>${formEnd('목표 이미지 저장')}${g.image?button('이미지 제거','remove-goal-image',g.id):''}`:'';}
 let imageImports=[];
+const categoryRequests=new WeakMap();
+const categoryHint=(name='name')=>`<small class="category-hint" id="category-hint-${name}" role="status">이름을 입력하면 카테고리를 자동으로 추천해요.</small>`;
+function cancelCategoryRecommendation(input) {
+ clearTimeout(categoryRequests.get(input)?.timer);categoryRequests.delete(input);
+}
+function recommendCategory(input,composing=false) {
+ if(!(input instanceof HTMLInputElement)||!/^name(?:-\d+)?$/.test(input.name)||!input.closest('#add-form'))return;
+ cancelCategoryRecommendation(input);
+ const form=input.form,category=/** @type {HTMLSelectElement} */(form.elements.namedItem(input.name.replace('name','category'))),hint=form.querySelector('#category-hint-'+input.name),name=input.value.trim();
+ if(!category||!hint)return;
+ hint.textContent='이름을 입력하면 카테고리를 자동으로 추천해요.';
+ if(composing||name.length<2)return;
+ const request={timer:0};categoryRequests.set(input,request);
+ const current=()=>input.isConnected&&categoryRequests.get(input)===request&&input.value.trim()===name;
+ request.timer=setTimeout(async()=>{
+  if(!current())return;
+  hint.textContent='카테고리를 추천하고 있어요…';
+  try {
+   const drafts=await aiRequest('/item-drafts',{name});
+   if(!current())return;
+   if(!drafts[0]||!categories.includes(drafts[0].category))throw Error('No category');
+   category.value=drafts[0].category;
+   hint.textContent=`${category.value} 카테고리를 추천했어요. 직접 바꿀 수 있어요.`;
+  }catch{if(current())hint.textContent='자동 추천을 불러오지 못했어요. 카테고리를 직접 선택해 주세요.';}
+ },600);
+}
 function registrationRows(){
- if(!aiDrafts.length)return `${field('name','물건 이름','text','','maxlength="120" required')}${field('price','가격 (원)','text','','inputmode="numeric" required')}${select('category','카테고리',categories)}${button('이름으로 카테고리 추천','suggest-category')}${field('url','상품 링크 (선택)','url','','placeholder="https://"')}`;
- return `<p>등록할 물건을 선택하고 내용을 확인해 주세요. 한 번에 최대 20개를 등록해요.</p>${aiDrafts.map((d,n)=>`<fieldset class="draft-row"><legend><label><input type="checkbox" name="included" value="${n}" checked> 물건 ${n+1} 등록</label></legend>${field('name-'+n,'물건 이름','text',d.name,'maxlength="120" required')}${field('price-'+n,'가격 (원)','text',d.price,'inputmode="numeric" required')}<label>카테고리<select name="category-${n}">${categories.map(c=>`<option ${c===d.category?'selected':''}>${c}</option>`).join('')}</select></label>${field('url-'+n,'상품 링크 (선택)','url',d.source_url||'')}<label><input type="checkbox" name="needed" value="${n}" checked> 할인 없이도 필요한 물건</label></fieldset>`).join('')}`;
+ if(!aiDrafts.length)return `${field('name','물건 이름','text','','maxlength="120" required aria-describedby="category-hint-name"')}${field('price','가격 (원)','text','','inputmode="numeric" required')}${select('category','카테고리',categories)}${categoryHint()}${field('url','상품 링크 (선택)','url','','placeholder="https://"')}`;
+ return `<p>등록할 물건을 선택하고 내용을 확인해 주세요. 한 번에 최대 20개를 등록해요.</p>${aiDrafts.map((d,n)=>`<fieldset class="draft-row"><legend><label><input type="checkbox" name="included" value="${n}" checked> 물건 ${n+1} 등록</label></legend>${field('name-'+n,'물건 이름','text',d.name,'maxlength="120" required aria-describedby="category-hint-name-'+n+'"')}${field('price-'+n,'가격 (원)','text',d.price,'inputmode="numeric" required')}<label>카테고리<select name="category-${n}">${categories.map(c=>`<option ${c===d.category?'selected':''}>${c}</option>`).join('')}</select></label>${categoryHint('name-'+n)}${field('url-'+n,'상품 링크 (선택)','url',d.source_url||'')}<label><input type="checkbox" name="needed" value="${n}" checked> 할인 없이도 필요한 물건</label></fieldset>`).join('')}`;
 }
 function add() {
  if(state.pendingRegistration)return `<section class="panel narrow"><h1>등록 결과를 확인해 주세요</h1><p>요청한 물건의 서버 저장 결과를 아직 확인하지 못했어요. 같은 요청으로 다시 확인하므로 중복 등록되지 않아요.</p><ul>${state.pendingRegistration.items.map(i=>`<li>${esc(i.name)} · ${won(i.price)}</li>`).join('')}</ul>${button('등록 결과 다시 확인','retry-registration','','primary')}${link('WebHome','홈으로','text-link')}</section>`;
@@ -370,6 +396,15 @@ const requestApi=createApiClient();
 const services=createServices(()=>state,write,today,requestApi);
 const aiRequest = async (path,body) => mapDrafts(await requestApi(path,body,state.apiBase||API_BASE,{existingResource:state.items.some(i=>i.remoteId)||!!state.pendingRegistration}));
 if(typeof document!=='undefined') {
+ document.addEventListener('input',event=>recommendCategory(event.target,event instanceof InputEvent&&event.isComposing));
+ document.addEventListener('compositionstart',event=>recommendCategory(event.target,true));
+ document.addEventListener('compositionend',event=>recommendCategory(event.target));
+ document.addEventListener('change',event=>{
+  const category=event.target;if(!(category instanceof HTMLSelectElement)||!category.closest('#add-form')||!/^category(?:-\d+)?$/.test(category.name))return;
+  const input=category.form.elements.namedItem(category.name.replace('category','name'));cancelCategoryRecommendation(input);
+  category.form.querySelector('#category-hint-'+category.name.replace('category','name')).textContent='직접 선택한 카테고리로 등록해요.';
+ });
+ document.addEventListener('submit',event=>{const form=event.target;if(form instanceof HTMLFormElement&&form.id==='add-form')form.querySelectorAll('input[name="name"],input[name^="name-"]').forEach(input=>{cancelCategoryRecommendation(input);const hint=form.querySelector('#category-hint-'+input.getAttribute('name'));if(hint)hint.textContent='선택한 카테고리로 등록해요.';});});
  document.addEventListener('input',event=>{if(event.target instanceof Element&&event.target.closest('#add-form'))refreshRegistration(event.target.closest('form'));});
  document.addEventListener('input',event=>{if(event.target instanceof Element && event.target.closest('#app form'))dirty=true;if(!(event.target instanceof HTMLInputElement))return;const form=event.target.closest('#goal-decision-form');if(!(form instanceof HTMLFormElement))return;if(event.target.name==='choice')goalChoice=event.target.value;query('#goal-custom-fields').hidden=goalChoice!=='custom';const g=state.goals.find(g=>g.id===form.dataset.goalId&&g.active&&!g.achieved);if(!g)return;const chosen=goalDecisionValue(form);query('#goal-impact').innerHTML=goalImpact(g,chosen.name,chosen.amount);query('#goal-decision-feedback').textContent='';form.querySelectorAll('button[type="submit"]').forEach(b=>{if(b instanceof HTMLButtonElement)b.disabled=!chosen.name||chosen.name.length>120||!validAmount(chosen.amount)||chosen.amount<=0;});});
  window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
@@ -393,7 +428,6 @@ if(typeof document!=='undefined') {
  document.addEventListener('click',event=>{if(!(event.target instanceof Element))return;const b=/** @type {HTMLElement} */(event.target.closest('[data-action]'));if(!b||!b.closest('#app'))return;const action=b.dataset.action,id=b.dataset.id,i=state.items.find(i=>i.id===id);try {
   if(action==='retry-registration'){b.setAttribute('disabled','');void services.register([],null).then(saved=>{location.hash='#/WebItem/'+saved[0].id;}).catch(e=>{b.removeAttribute('disabled');notify(e.message);});}
   else if(action==='retry-image'){b.setAttribute('disabled','');void analyzeImages([Number(id)]).then(()=>{if(location.hash==='#/WebAdd')render();}).catch(e=>notify(e.message));}
-  else if(action==='suggest-category'){const form=query('#add-form'),name=String(/** @type {HTMLInputElement} */(form.querySelector('[name="name"]')).value||'').trim();if(name.length<2)throw Error('물건 이름을 두 글자 이상 입력해 주세요.');b.setAttribute('disabled','');void aiRequest('/item-drafts',{name}).then(drafts=>{if(form.isConnected&&/** @type {HTMLInputElement} */(form.querySelector('[name="name"]')).value.trim()===name)/** @type {HTMLSelectElement} */(form.querySelector('[name="category"]')).value=drafts[0].category;}).catch(e=>notify(e.message)).finally(()=>b.removeAttribute('disabled'));}
   else if(action==='select-home'){selectedHomeItem=id;render();const selected=Array.from(document.querySelectorAll('button[data-action="select-home"]')).find(el=>el.getAttribute('data-id')===id);if(selected instanceof HTMLElement)selected.focus({preventScroll:true});}
   else if(action==='clear-home'){selectedHomeItem='';render();query('#home-detail').tabIndex=-1;query('#home-detail').focus({preventScroll:true});}
   else if(action==='draft'){const draft=aiDrafts[Number(id)];/** @type {HTMLInputElement} */(query('#add-form [name="name"]')).value=draft.name;/** @type {HTMLInputElement} */(query('#add-form [name="price"]')).value=draft.price;/** @type {HTMLInputElement} */(query('#add-form [name="url"]')).value=draft.source_url||'';/** @type {HTMLSelectElement} */(query('#add-form [name="category"]')).value=draft.category;dirty=true;}

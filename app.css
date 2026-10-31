@@ -383,3 +383,5 @@
 #app .goal-carry{font-size:12px;color:var(--brown);margin:4px 0}
 #app .goal-carry summary{cursor:pointer;padding:4px 0}
 @media(max-width:760px){#app .reflection-card{padding:22px 18px}#app .answered-badge{max-width:150px}#app .report-month{justify-content:center}}
+
+.category-hint{display:block;min-height:2.8em;line-height:1.4;}
