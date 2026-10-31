@@ -32,3 +32,20 @@ if (landing && 'IntersectionObserver' in window) {
   }, { rootMargin: '-20% 0px -45% 0px' });
   for (const step of landing.querySelectorAll('.story-step')) stepObserver.observe(step);
 }
+
+const header = landing?.querySelector('.landing-header-shell');
+if (header) {
+  let lastScroll = window.scrollY;
+  window.addEventListener('scroll', () => {
+    if (landing.hasAttribute('hidden')) return;
+    const current = Math.max(0, Math.min(window.scrollY, document.documentElement.scrollHeight - window.innerHeight));
+    if (current <= 80) header.classList.remove('is-hidden');
+    else if (Math.abs(current - lastScroll) < 8) return;
+    else header.classList.toggle('is-hidden', current > lastScroll);
+    lastScroll = current;
+  }, { passive: true });
+  window.addEventListener('hashchange', () => {
+    header.classList.remove('is-hidden');
+    lastScroll = window.scrollY;
+  });
+}
