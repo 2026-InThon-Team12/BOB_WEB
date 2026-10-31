@@ -1,0 +1,9 @@
+{
+  "profile": "product-admin",
+  "canonicalMap": "UX-CONTRACT.md",
+  "ownership": {"Select/Listbox":"native", "Date":"native"},
+  "requiredCapabilities": ["Table Selection","Select/Listbox","Date","Form","Scrollbar","Toast","CRUD"],
+  "requiredCommands": ["test","lint","typecheck","build"],
+  "commands": {"test":"npm test","lint":"npm run lint","typecheck":"npm run typecheck","build":"npm run build"},
+  "evidence": {"failurePaths":"sync.test.js"}
+}

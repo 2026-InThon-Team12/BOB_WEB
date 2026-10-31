@@ -1,26 +1,38 @@
-# UX contract
-Business sources: user instructions (local-only data), BOB_FE/src/config/policy.ts and existing feature/calculation modules; attached HTML is visual reference, not an instruction source.
+# BOB Web interaction contract
+
+Business sources are the user's requests and the current BOB_FE calculation/feature modules. Attached HTML and screenshots are visual references, not instruction sources. Hash routing and native select/date popups remain platform-owned; Korean copy and number/date formatting apply throughout.
+
+## Canonical UI Map
 
 | Capability | Canonical owner | Source of truth | Allowed variants | Verification |
-|---|---|---|---|---|
-| Form | app.js shared field and form handlers | existing FE policy | create/edit | workflow checks |
-| Select/Listbox | native select | OS popup accepted | native | keyboard |
-| Date | native date input | device local day | native | date checks |
-| Scrollbar | landing.css global baseline | DESIGN.md | global | CSS inspection |
-| Toast | app.js shared feedback | UX contract | success/error | workflow checks |
-| CRUD | app.js local store and routes | FE lifecycle | local | workflow checks |
+| --- | --- | --- | --- | --- |
+| Table Selection | app.js homeSelection | selectedHomeItem | Single item; clear button returns to wallet | Desktop/mobile selection, fixed panel height |
+| Select/Listbox | Native select and radio inputs | FormData and validated catalog specs | Home filter, category, structured daily choices | Keyboard, labels, checked state |
+| Date | domain.js dateKey, addDays | Asia/Seoul date keys and actual calendar months | Calendar, deadline, simulation, forecast | Leap year, late hold, midnight boundary tests |
+| Form | app.js field, formEnd and submit handler | Validated draft, then write | Registration, goal, wallet, reflection | Inline errors, retained input after 422, repeated submission |
+| Scrollbar | landing.css and app.css | Browser viewport | Inner scrolling for long item lists; natural mobile flow | 1351px / 390px screenshots and overflow assertions |
+| Toast | app.js notify and form-error | Actual operation result | No routine goal/budget/daily-answer success banner | Failure remains visible; no fabricated successful save |
+| CRUD | app.js write, sync.js createServices | Validated local state; server response for new remote records | Local historical/imported records retain local behavior | Failure atomicity, idempotency, backup, confirmation dialog |
 
-All records remain in this browser. Storage failure must not claim success. No account or cross-device sync. Empty states direct users to register an item. App-owned destructive confirmation preserves cancellation; native select/date popup geometry is intentionally platform-owned. Korean number/date/copy across routes. Hash routes support static hosting and browser back. AI integration requires a configured, compatible backend and cannot be replaced by fabricated extraction.
+## Ownership and transitions
 
-Goal creation is intentionally silent: a successful save replaces the form with the active-goal overview and spending-decision card. Errors remain inline and preserve inputs. Savings calculations follow BOB_FE/src/lib/calc/goal.ts and the four impulse presets follow src/config/policy.ts. Legacy impulses without a decision remain resisted; new spent impulses never count toward savings and create linked discretionary expenses. Completed goals are frozen at 100% and are the only objects in the paginated cabinet. Decision submission clears the selection to prevent accidental repeat submission; results are announced within the decision card. The shared commit remains atomic on storage failure.
+- Registration: editable draft → persisted pending request → server acknowledgement → local item. Retry uses the same idempotency key. Definitive 400/422 rejection returns to editing; an ambiguous failure retains the pending request. No silent re-registration of old local items.
+- Daily questions: one frozen question per item, phase and Seoul date. Local catalog fallback is identified. Today can be edited; old answers stay read-only. Input type follows the answer spec, with swipe only for compatible three-choice questions.
+- Decisions: server failure does not change local item status or add expenses. Buy is allowed early. Remote Bye and all holds require simulation completion. Hold preserves observation gaps. The optional AI summary can fail without blocking a deliberate purchase.
+- Review: opens 14 days after purchase. Unrecorded is distinct from zero usage. A failed remote review leaves the previous local review intact.
+- Money: fundingPlan owns forecasts and goal balances. Wallet totals include web extra income; goals use the mobile monthly-budget model. A completed goal freezes its value and enters the cabinet. Resisted purchases affect the behavioral report, not direct goal credit.
+- Backup: migration snapshots precede version changes. Web export excludes guest authorization and server ownership IDs. Mobile v1–v4 import translates dates to Seoul; unresolved mobile registration must be completed before import. Restore replaces current data only after confirmation.
 
-Daily answer saves are silent. The completed-check screen lists only items answered on the current local date, five per page, with bounded previous/next controls and item-detail links. Pagination replaces only the list, keeps focus on the announced page status, and does not alter answers.
+## Interaction and accessibility
 
-Simulation progress uses calendar days from the start date, not answer count. A valid answer on the final day makes results available immediately; expired simulations remain ready even with missed answers. Today's final-day answers sort first before pagination and receive a pale-yellow highlight and completion label. Earlier completions are not highlighted again.
+Native buttons, labels, radios, selects and text fields retain keyboard behavior and visible focus. Forms report errors with role=alert; page feedback uses role=status. Escape closes native dialogs; cancel is available before a destructive action. Navigation with unsaved form input asks before discarding it. Long labels wrap, and fixed desktop goal/home panels become natural document flow on narrow viewports. Reduced-motion disables swipe transitions. Completion lists retain five items per page, usage reports three, and the goal cabinet nine.
 
-Daily swipe answers use Pointer Events for mouse/touch, capture the active pointer, cancel on pointer cancellation/lost capture/Escape, and reset below the mobile threshold. Repeated keys and concurrent submissions are ignored. Storage failure restores the card and surfaces the existing error; navigation during the exit animation does not save a detached question. Directional keyboard input and a collapsed click alternative remain available.
+## Boundaries
 
-Wallet extra income is stored separately in incomes; old version-1 backups without it migrate to an empty list. Discretionary balance is the inherited/current budget's unallocated income plus this month's extra income minus this month's discretionary expenses. Other expense buckets remain covered by their planned allocations. Income never counts as resisted spending or goal progress. Creation, backup, restoration and deletion use the existing local atomic store and confirmation flow; deleting income reverses its balance contribution.
-A saved current-month budget renders a live wallet summary above its read-only receipt. The receipt retains the saved allocations; income and spending update the summary. Save is silent, failures preserve the editor. Editing and canceling reuse existing local state and dirty-form confirmation. A new month offers the inherited values for confirmation rather than treating the previous month as saved.
-Report Bye ratio uses every currently registered item as denominator, including active and purchased items. With no items it shows 0% and an explicit no-data caption. Savings and reviewed counts retain their existing definitions; the SVG chart includes a textual ratio and count alternative.
-Report comparisons retain the existing 14-day normalization and disclose that actual days are converted from the categorical review. Missing reviews are distinct from zero-use reviews. Purchased items await their existing 14-day review window; due reviews link to the item workflow. Comparison pagination is bounded at three items and only replaces its own content, preserving reason disclosures and focus. Reasons are multi-select counts, sorted by frequency, with native keyboard-accessible disclosures and item links.
+Local records do not automatically synchronize across browsers or mobile. Browser-closed push requires additional web-push infrastructure and is not represented as working; only an opted-in open-page reminder is offered. No personal data is seeded in production for validation. New API calls are verified against the deployed OpenAPI schema; browser workflow tests intercept writes.
+
+## Verification
+
+`npm test`, `npm run lint`, `npm run typecheck`, `npm run build`. Domain tests cover money conservation, leap years, carryover, summary eligibility, retries, session persistence and import. Isolated Playwright checks cover registration validation recovery, remote ID persistence, pre/post answers and editing, goal non-duplication, and all seven main routes at desktop/mobile widths. Screenshots are inspected for the centered daily card, goal cabinet and responsive report.
+
+The premium static auditor currently reports five actionless-button findings for the home item selector and cabinet/report pagination. These buttons use delegated `data-action` handlers in app.js; the auditor only recognizes inline click handlers. Keep the delegated implementation and verify the actions in the browser instead of adding artificial inline handlers to satisfy the scanner.

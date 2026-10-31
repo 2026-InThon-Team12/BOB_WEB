@@ -7,7 +7,7 @@
     "dev": "node server.mjs",
     "start": "node server.mjs",
     "build": "node build.mjs",
-    "lint": "eslint app.js api.js landing.js",
+    "lint": "eslint app.js api.js landing.js domain.js questions.js question-catalog.js sync.js backup.js",
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --test"
   },

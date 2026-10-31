@@ -353,3 +353,33 @@
 @media(max-width:1000px){#app .reason-heading{align-items:flex-start;flex-direction:column;gap:4px}}
 @media(max-width:760px){#app .report-details>.panel{margin-bottom:20px}#app .reason-heading{flex-direction:row;gap:10px}}
 #app #report-usage:has(.report-pagination) .usage-items{min-height:450px}
+
+/* Structured daily answers retain the centered card and native input controls. */
+#app .reflection-card{position:relative;--swipe-strength:0;width:100%;max-width:420px;margin:0 auto;padding:26px 24px;min-height:0;text-align:center;overflow-wrap:anywhere}
+#app .reflection-card h2{margin:18px 0 12px;font-size:24px}
+#app .reflection-card .reflection-prompt{font-size:19px;line-height:1.6;margin:12px 0 20px}
+#app .reflection-card>small{display:block;color:var(--muted);margin:8px 0;font-size:12px}
+#app .reflection-card form{text-align:left;margin-top:24px;touch-action:auto;user-select:text}
+#app .reflection-card form>button{width:100%;margin-top:10px}
+#app .reflection-card textarea{width:100%;box-sizing:border-box;font:inherit;line-height:1.6;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:12px;resize:vertical;min-height:100px}
+#app .reflection-choices{display:grid;gap:8px;border:0;padding:0;margin:0}
+#app .reflection-choices label{display:flex;align-items:center;gap:10px;padding:12px;margin:0;border:1px solid var(--line);border-radius:6px;cursor:pointer}
+#app .reflection-choices label:has(:checked){background:var(--cream);border-color:var(--brown)}
+#app .reflection-choices input{width:18px;height:18px;margin:0;accent-color:var(--brown);flex-shrink:0}
+#app .reflection-history details{padding:12px 0;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+#app .reflection-history summary{cursor:pointer;font-size:13px;color:var(--muted)}
+#app .reflection-summary{padding:16px;background:var(--cream);border-radius:8px;margin:20px 0}
+#app .grass-cell.recorded{background:#D6B98E;border-color:#D6B98E}
+#app .answered-list li{position:relative}
+#app .answered-list li:has(.answer-edit) a{padding-bottom:40px}
+#app .answer-edit{position:absolute;right:12px;bottom:7px;padding:3px 8px;font-size:11px;border:0;background:transparent;text-decoration:underline;text-underline-offset:3px}
+#app .answered-badge{max-width:200px;white-space:normal;overflow-wrap:anywhere}
+#app .draft-row{padding:16px;border:1px solid var(--line);border-radius:8px;margin:18px 0}
+#app .draft-row input[type=checkbox],#app #registration-discount input[type=checkbox]{width:16px;height:16px;accent-color:var(--brown);margin-right:6px}
+#app .draft-row legend label{display:flex;align-items:center;margin:0}
+#app .report-month{display:flex;flex-flow:row nowrap;align-items:center;justify-content:flex-end;gap:16px;margin:0 0 16px}
+#app .report-month button{min-width:44px;padding:8px}
+#app .category-comparison{padding:12px 0;border-top:1px solid var(--line);font-size:13px}
+#app .goal-carry{font-size:12px;color:var(--brown);margin:4px 0}
+#app .goal-carry summary{cursor:pointer;padding:4px 0}
+@media(max-width:760px){#app .reflection-card{padding:22px 18px}#app .answered-badge{max-width:150px}#app .report-month{justify-content:center}}

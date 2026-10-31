@@ -16,3 +16,9 @@
 !vercel.json
 
 !landing.js
+
+!domain.js
+!questions.js
+!question-catalog.js
+!sync.js
+!backup.js

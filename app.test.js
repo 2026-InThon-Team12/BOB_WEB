@@ -34,16 +34,15 @@ test('only completed goals enter the cabinet',async()=>{
  assert.doesNotMatch(html,/data-id="pending"/);assert.match(html,/data-id="done"/);
  assert.doesNotMatch(html,/activate-goal/);
 });
-test('goal forecast matches app savings policy and handles missing savings',async()=>{
- const {goalForecast}=await import('./app.js');
- const f=goalForecast(100000,0,300000,23000,'2026-11-01');
- assert.equal(f.eta,'2026-11-11');assert.equal(f.delay,2);assert.equal(f.etaIfBuy,'2026-11-13');
- assert.equal(goalForecast(100000,0,300000,4800,'2026-11-01').delay,1);
- assert.equal(goalForecast(100000,0,0,23000,'2026-11-01').eta,null);
- assert.equal(goalForecast(100000,100000,0,0,'2026-11-01').eta,'2026-11-01');
- assert.equal(goalForecast(100000,99999,300000,0,'2026-11-30').eta,'2026-12-01');
+test('goal forecast uses free budget, actual month length and expense impact',async()=>{
+ const {goalForecast}=await import('./app.js');const {newFunding}=await import('./domain.js');
+ const data={budgets:{'2026-11':{income:300000,food:0,living:0,transport:0,saving:0}},expenses:[]};
+ const goal={price:100000,funding:newFunding(data,'2026-11-01')};
+ const f=goalForecast(goal,data,23000,'2026-11-01');
+ assert.equal(f.eta,'2026-11-10');assert.equal(f.delay,1);assert.equal(f.etaIfBuy,'2026-11-11');
+ assert.equal(goalForecast(goal,{...data,budgets:{}},0,'2026-11-01').eta,null);
 });
-test('resisting increases savings while spending creates a linked wallet expense only',async()=>{
+test('resisting increases the behavioral report, while spending creates a linked wallet expense',async()=>{
  const {recordGoalDecision,savedTotal}=await import('./app.js');
  const data={goals:[{id:'g',active:true}],items:[],impulses:[{amount:1000}],expenses:[]};
  recordGoalDecision(data,'g','치킨',23000,'resisted','2026-11-01');
@@ -76,7 +75,7 @@ test('swipe direction follows mobile thresholds and cancels short or downward dr
  for(const [x,y] of [[0,0],[90,0],[-90,0],[0,-90],[20,20],[0,200]])assert.equal(swipeAnswer(x,y),null);
 });
 
-test('final-day answer completes simulation immediately, without requiring every previous answer',async()=>{
+test('final-day answer is highlighted but results unlock the following day',async()=>{
  const {simulationProgress,ready}=await import('./app.js');
  const item={status:'active',start:'2026-10-26',days:7,answers:{}};
  assert.deepEqual(simulationProgress(item,'2026-11-01'),{current:7,finishedToday:false});
@@ -84,7 +83,7 @@ test('final-day answer completes simulation immediately, without requiring every
  for(const answer of ['yes','no','unsure']){
   item.answers['2026-11-01']=answer;
   assert.deepEqual(simulationProgress(item,'2026-11-01'),{current:7,finishedToday:true});
-  assert.equal(ready(item,'2026-11-01'),true);
+  assert.equal(ready(item,'2026-11-01'),false);
  }
  assert.deepEqual(simulationProgress(item,'2026-11-02'),{current:7,finishedToday:false});
  assert.equal(ready(item,'2026-11-02'),true);
@@ -134,16 +133,16 @@ test('report ratio includes active and buy items and handles empty/all-bye data'
 
 test('report comparisons preserve zero reviews and distinguish pending and due reviews',async()=>{
  const {usageComparison,usageReport,purchaseReasons}=await import('./app.js');
- const item={id:'a',name:'<headphones>',category:'디지털기기',price:100,status:'buy',days:7,answers:{a:'yes',b:'no',c:'yes'},decided:'2026-10-25',reasons:['실제로 필요해서']};
- assert.deepEqual(usageComparison(item,'2026-11-01'),{expected:4,actual:null,remaining:7});
- assert.deepEqual(usageComparison({...item,review:0},'2026-11-08'),{expected:4,actual:0,remaining:0});
+ const item={id:'a',name:'<headphones>',category:'디지털기기',price:100,status:'buy',start:'2026-10-17',days:7,answers:{a:'yes',b:'no',c:'yes'},decided:'2026-10-25',reasons:['실제로 필요해서']};
+ assert.deepEqual(usageComparison(item,'2026-11-01'),{expected:null,actual:null,remaining:7});
+ assert.deepEqual(usageComparison({...item,review:0},'2026-11-08'),{expected:null,actual:0,remaining:0});
  assert.equal(usageComparison({...item,decided:undefined},'2026-11-01').remaining,null);
  const pending=usageReport([item],0,'2026-11-01');assert.match(pending,/사용 점검까지 7일/);assert.doesNotMatch(pending,/class="actual"/);assert.match(pending,/&lt;headphones&gt;/);
  assert.match(usageReport([item],0,'2026-11-08'),/실제 사용 기록하기/);
  const many=Array.from({length:4},(_,n)=>({...item,id:String(n),name:`물건${n}`}));
  assert.doesNotMatch(usageReport(many,0),/>물건3</);assert.match(usageReport(many,99),/>물건3</);assert.doesNotMatch(usageReport(many,99),/>물건2</);
  const groups=purchaseReasons([item,{...item,status:'bye',reasons:['실제로 필요해서','SNS·광고를 보고']}]);
- assert.equal(groups[0].reason,'실제로 필요해서');assert.equal(groups[0].items.length,2);assert.equal(groups[0].bye,1);assert.equal(groups[1].items.length,1);
+ assert.equal(groups[0].reason,'SNS·광고를 보고');assert.equal(groups[0].rate,1);assert.equal(groups[1].items.length,2);assert.equal(groups[1].rate,.5);
  assert.deepEqual(purchaseReasons([]),[]);assert.match(usageReport([]),/구매한 물건이 생기면/);
 });
 
