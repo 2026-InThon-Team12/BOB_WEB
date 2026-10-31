@@ -1,0 +1,6995 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BOB API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "health"
+        ],
+        "summary": "Ready",
+        "operationId": "ready_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/guest-sessions": {
+      "post": {
+        "tags": [
+          "guest"
+        ],
+        "summary": "Create Guest",
+        "operationId": "create_guest_api_v1_guest_sessions_post",
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuestSessionOutput"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me/push-token": {
+      "put": {
+        "tags": [
+          "guest"
+        ],
+        "summary": "Register Push",
+        "operationId": "register_push_api_v1_me_push_token_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PushTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PushTokenOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "guest"
+        ],
+        "summary": "Disable Push",
+        "operationId": "disable_push_api_v1_me_push_token_delete",
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/metadata": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Metadata",
+        "operationId": "metadata_api_v1_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/today": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Today Cards",
+        "operationId": "today_cards_api_v1_today_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "include_answered",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Answered"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TodayOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/items/batch": {
+      "post": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Register Items",
+        "operationId": "register_items_api_v1_items_batch_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/registration-previews": {
+      "post": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Registration Preview",
+        "operationId": "registration_preview_api_v1_registration_previews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/items": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "List Items",
+        "operationId": "list_items_api_v1_items_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemListOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/items/{item_id}": {
+      "get": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Get Item",
+        "operationId": "get_item_api_v1_items__item_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "items"
+        ],
+        "summary": "Patch Item",
+        "operationId": "patch_item_api_v1_items__item_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemPatch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/answers/{answer_date}": {
+      "put": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Save Answer",
+        "operationId": "save_answer_api_v1_simulations__simulation_id__answers__answer_date__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "answer_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Answer Date"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AnswerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AnswerOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/result": {
+      "get": {
+        "tags": [
+          "simulation"
+        ],
+        "summary": "Result",
+        "operationId": "result_api_v1_simulations__simulation_id__result_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationResult"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/items/{item_id}/decision": {
+      "put": {
+        "tags": [
+          "purchase"
+        ],
+        "summary": "Decide",
+        "operationId": "decide_api_v1_items__item_id__decision_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "item_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Item Id"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 128
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchases/{purchase_id}/review": {
+      "put": {
+        "tags": [
+          "purchase"
+        ],
+        "summary": "Review Purchase",
+        "operationId": "review_purchase_api_v1_purchases__purchase_id__review_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "purchase_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Purchase Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/item-drafts": {
+      "post": {
+        "tags": [
+          "AI drafts"
+        ],
+        "summary": "Item Draft",
+        "operationId": "item_draft_api_v1_item_drafts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ItemDraftRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftAnalysis"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/cart-extractions": {
+      "post": {
+        "tags": [
+          "AI drafts"
+        ],
+        "summary": "Cart Extraction",
+        "operationId": "cart_extraction_api_v1_cart_extractions_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_cart_extraction_api_v1_cart_extractions_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftAnalysis"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/budgets/{month}": {
+      "get": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Get Budget",
+        "operationId": "get_budget_api_v1_budgets__month__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "title": "Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Put Budget",
+        "operationId": "put_budget_api_v1_budgets__month__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+              "title": "Month"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BudgetInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BudgetOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals": {
+      "post": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Create Goal",
+        "operationId": "create_goal_api_v1_goals_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoalInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/goals/current": {
+      "get": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Get Current Goal",
+        "operationId": "get_current_goal_api_v1_goals_current_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalOutput"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Patch Current Goal",
+        "operationId": "patch_current_goal_api_v1_goals_current_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoalPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/impulses": {
+      "post": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Create Impulse",
+        "operationId": "create_impulse_api_v1_impulses_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImpulseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImpulseOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/impulses/{impulse_id}/decision": {
+      "put": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Decide Impulse",
+        "operationId": "decide_impulse_api_v1_impulses__impulse_id__decision_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "impulse_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Impulse Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImpulseDecision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImpulseOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/current/next": {
+      "post": {
+        "tags": [
+          "finance"
+        ],
+        "summary": "Next Goal",
+        "operationId": "next_goal_api_v1_goals_current_next_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoalInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/home": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Home",
+        "operationId": "home_api_v1_home_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HomeOutput"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/wallet": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Wallet",
+        "operationId": "wallet_api_v1_wallet_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/wallet/compare": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Wallet Compare",
+        "operationId": "wallet_compare_api_v1_wallet_compare_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "price",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 1000000000000,
+              "exclusiveMinimum": 0,
+              "title": "Price"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletComparison"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/expenses": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Expenses",
+        "operationId": "expenses_api_v1_expenses_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Add Expense",
+        "operationId": "add_expense_api_v1_expenses_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/expenses/{expense_id}": {
+      "put": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Edit Expense",
+        "operationId": "edit_expense_api_v1_expenses__expense_id__put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expense_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Expense Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExpenseInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExpenseOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Remove Expense",
+        "operationId": "remove_expense_api_v1_expenses__expense_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "expense_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Expense Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/reports": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Reports",
+        "operationId": "reports_api_v1_reports_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/impulses/presets": {
+      "get": {
+        "tags": [
+          "app screens"
+        ],
+        "summary": "Impulse Presets",
+        "operationId": "impulse_presets_api_v1_impulses_presets_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Impulse Presets Api V1 Impulses Presets Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/product-url-drafts": {
+      "post": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "붙여넣은 상품 URL에서 확인용 품목 초안 만들기",
+        "operationId": "product_url_draft_api_v1_product_url_drafts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUrlInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftAnalysis"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/share-drafts": {
+      "post": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Share Draft",
+        "description": "Compatibility for old clients; new registration uses product-url-drafts.",
+        "operationId": "share_draft_api_v1_share_drafts_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUrlInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DraftAnalysis"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/discount-extractions": {
+      "post": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Discount Extraction",
+        "operationId": "discount_extraction_api_v1_discount_extractions_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/discount-previews": {
+      "post": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Discount Preview",
+        "operationId": "discount_preview_api_v1_discount_previews_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartDiscountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/discount-comparisons": {
+      "post": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Discount Comparison",
+        "operationId": "discount_comparison_api_v1_discount_comparisons_post",
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/discount-comparisons/{comparison_id}": {
+      "get": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Get Comparison",
+        "operationId": "get_comparison_api_v1_discount_comparisons__comparison_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "comparison_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comparison Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/discount-comparisons/{comparison_id}/decision": {
+      "put": {
+        "tags": [
+          "product URLs and discounts"
+        ],
+        "summary": "Decide Comparison",
+        "operationId": "decide_comparison_api_v1_discount_comparisons__comparison_id__decision_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "comparison_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comparison Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountDecision"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/question-templates": {
+      "get": {
+        "tags": [
+          "purchase questions"
+        ],
+        "summary": "Question Templates",
+        "operationId": "question_templates_api_v1_question_templates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchases/{purchase_id}/daily-question": {
+      "post": {
+        "tags": [
+          "purchase questions"
+        ],
+        "summary": "Daily Question",
+        "operationId": "daily_question_api_v1_purchases__purchase_id__daily_question_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "purchase_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Purchase Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchases/{purchase_id}/questions": {
+      "get": {
+        "tags": [
+          "purchase questions"
+        ],
+        "summary": "Question History",
+        "operationId": "question_history_api_v1_purchases__purchase_id__questions_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "purchase_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Purchase Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 30,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseQuestionHistory"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchase-questions/{question_id}": {
+      "get": {
+        "tags": [
+          "purchase questions"
+        ],
+        "summary": "Get Question",
+        "operationId": "get_question_api_v1_purchase_questions__question_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchase-questions/{question_id}/answer": {
+      "put": {
+        "tags": [
+          "purchase questions"
+        ],
+        "summary": "Answer Question",
+        "operationId": "answer_question_api_v1_purchase_questions__question_id__answer_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PurchaseAnswerInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pre-purchase-question-templates": {
+      "get": {
+        "tags": [
+          "pre-purchase questions"
+        ],
+        "summary": "Question Templates",
+        "operationId": "question_templates_api_v1_pre_purchase_question_templates_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/daily-question": {
+      "post": {
+        "tags": [
+          "pre-purchase questions"
+        ],
+        "summary": "Daily Question",
+        "operationId": "daily_question_api_v1_simulations__simulation_id__daily_question_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/questions": {
+      "get": {
+        "tags": [
+          "pre-purchase questions"
+        ],
+        "summary": "History",
+        "operationId": "history_api_v1_simulations__simulation_id__questions_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 30,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationQuestionHistory"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulation-questions/{question_id}": {
+      "get": {
+        "tags": [
+          "pre-purchase questions"
+        ],
+        "summary": "Get Question",
+        "operationId": "get_question_api_v1_simulation_questions__question_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulation-questions/{question_id}/answer": {
+      "put": {
+        "tags": [
+          "pre-purchase questions"
+        ],
+        "summary": "Answer Question",
+        "operationId": "answer_question_api_v1_simulation_questions__question_id__answer_put",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "question_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Question Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulationAnswerInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationQuestionOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/local-question": {
+      "post": {
+        "tags": [
+          "local question storage"
+        ],
+        "summary": "Generate Pre",
+        "operationId": "generate_pre_api_v1_simulations__simulation_id__local_question_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalQuestionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/simulations/{simulation_id}/result-summary": {
+      "post": {
+        "tags": [
+          "local question storage"
+        ],
+        "summary": "Summarize",
+        "operationId": "summarize_api_v1_simulations__simulation_id__result_summary_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "simulation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Simulation Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalSummaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/purchases/{purchase_id}/local-question": {
+      "post": {
+        "tags": [
+          "local question storage"
+        ],
+        "summary": "Generate Post",
+        "operationId": "generate_post_api_v1_purchases__purchase_id__local_question_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "purchase_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Purchase Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocalQuestionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/shelf": {
+      "get": {
+        "tags": [
+          "goal shelf"
+        ],
+        "summary": "Shelf",
+        "operationId": "shelf_api_v1_goals_shelf_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/goals/{goal_id}/purchase": {
+      "put": {
+        "tags": [
+          "goal shelf"
+        ],
+        "summary": "Confirm Purchase Removed",
+        "operationId": "confirm_purchase_removed_api_v1_goals__goal_id__purchase_put",
+        "deprecated": true,
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "goal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Goal Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/setup": {
+      "get": {
+        "tags": [
+          "goal setup"
+        ],
+        "summary": "Setup",
+        "operationId": "setup_api_v1_goals_setup_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalSetupOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/goals/preview": {
+      "post": {
+        "tags": [
+          "goal setup"
+        ],
+        "summary": "Preview",
+        "operationId": "preview_api_v1_goals_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoalPreviewInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalPreviewOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/api/v1/goals/current/replacement": {
+      "post": {
+        "tags": [
+          "goal setup"
+        ],
+        "summary": "Replace Goal",
+        "operationId": "replace_goal_api_v1_goals_current_replacement_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoalReplacementInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoalReplacementOutput"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnswerOption": {
+        "properties": {
+          "value": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO",
+              "UNSURE"
+            ],
+            "title": "Value"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "value",
+          "label"
+        ],
+        "title": "AnswerOption"
+      },
+      "AnswerOutput": {
+        "properties": {
+          "answer_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Answer Date"
+          },
+          "usage_answer": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO",
+              "UNSURE"
+            ],
+            "title": "Usage Answer"
+          },
+          "supplemental_answer": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO",
+              "UNSURE"
+            ],
+            "title": "Supplemental Answer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "answer_date",
+          "usage_answer",
+          "supplemental_answer"
+        ],
+        "title": "AnswerOutput"
+      },
+      "AnswerRequest": {
+        "properties": {
+          "usage_answer": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO",
+              "UNSURE"
+            ],
+            "title": "Usage Answer"
+          },
+          "supplemental_answer": {
+            "type": "string",
+            "enum": [
+              "YES",
+              "NO",
+              "UNSURE"
+            ],
+            "title": "Supplemental Answer",
+            "default": "UNSURE",
+            "deprecated": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "usage_answer"
+        ],
+        "title": "AnswerRequest"
+      },
+      "BatchDiscountReview": {
+        "properties": {
+          "rule": {
+            "$ref": "#/components/schemas/CartDiscountRule"
+          },
+          "needed_item_indexes": {
+            "items": {
+              "type": "integer",
+              "maximum": 19.0,
+              "minimum": 0.0
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Needed Item Indexes"
+          },
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NEEDED",
+              "ALL"
+            ],
+            "title": "Decision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "rule",
+          "needed_item_indexes",
+          "decision"
+        ],
+        "title": "BatchDiscountReview"
+      },
+      "BatchOutput": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemOutput"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "discount": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "BatchOutput"
+      },
+      "BatchRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemInput"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Items"
+          },
+          "discount_review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BatchDiscountReview"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "BatchRequest"
+      },
+      "Body_cart_extraction_api_v1_cart_extractions_post": {
+        "properties": {
+          "image": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "Image",
+            "description": "Single JPEG, PNG, or WebP cart screenshot"
+          }
+        },
+        "type": "object",
+        "required": [
+          "image"
+        ],
+        "title": "Body_cart_extraction_api_v1_cart_extractions_post"
+      },
+      "BudgetInput": {
+        "properties": {
+          "income": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Income"
+          },
+          "food": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Food"
+          },
+          "living": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Living"
+          },
+          "transport": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Transport"
+          },
+          "savings": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Savings",
+            "default": 0
+          },
+          "hourly_wage": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hourly Wage"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "income",
+          "food",
+          "living",
+          "transport"
+        ],
+        "title": "BudgetInput"
+      },
+      "BudgetOutput": {
+        "properties": {
+          "income": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Income"
+          },
+          "food": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Food"
+          },
+          "living": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Living"
+          },
+          "transport": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Transport"
+          },
+          "savings": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Savings",
+            "default": 0
+          },
+          "hourly_wage": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hourly Wage"
+          },
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "month_days": {
+            "type": "integer",
+            "title": "Month Days"
+          },
+          "monthly_available_amount": {
+            "type": "integer",
+            "title": "Monthly Available Amount"
+          },
+          "daily_saving_possible_amount": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Saving Possible Amount"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "income",
+          "food",
+          "living",
+          "transport",
+          "month",
+          "month_days",
+          "monthly_available_amount",
+          "daily_saving_possible_amount"
+        ],
+        "title": "BudgetOutput"
+      },
+      "CartDiscountRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CartLine"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Items"
+          },
+          "rule": {
+            "$ref": "#/components/schemas/CartDiscountRule"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "rule"
+        ],
+        "title": "CartDiscountRequest"
+      },
+      "CartDiscountRule": {
+        "properties": {
+          "minimum_amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Minimum Amount"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "PCT",
+              "WON"
+            ],
+            "title": "Unit"
+          },
+          "value": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Value"
+          },
+          "shipping_fee": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Shipping Fee",
+            "default": 0
+          },
+          "free_shipping_minimum": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Shipping Minimum"
+          },
+          "free_shipping_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Shipping Enabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "minimum_amount",
+          "unit",
+          "value"
+        ],
+        "title": "CartDiscountRule"
+      },
+      "CartLine": {
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Client Id"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "price": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Price"
+          },
+          "purchase_reasons": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseReason"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "title": "Purchase Reasons"
+          },
+          "enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enabled"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "client_id",
+          "name",
+          "price"
+        ],
+        "title": "CartLine"
+      },
+      "Category": {
+        "type": "string",
+        "enum": [
+          "DAILY_LIVING",
+          "CLOTHING",
+          "FURNITURE",
+          "APPLIANCES",
+          "DIGITAL",
+          "HOBBY",
+          "GAME",
+          "BEAUTY",
+          "FOOD",
+          "OTHER"
+        ],
+        "title": "Category"
+      },
+      "CategoryStatistic": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "sample_count": {
+            "type": "integer",
+            "title": "Sample Count"
+          },
+          "predicted_days": {
+            "type": "number",
+            "title": "Predicted Days"
+          },
+          "actual_days_estimate": {
+            "type": "number",
+            "title": "Actual Days Estimate"
+          },
+          "actual_days_min": {
+            "type": "number",
+            "title": "Actual Days Min"
+          },
+          "actual_days_max": {
+            "type": "number",
+            "title": "Actual Days Max"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate"
+          },
+          "overprediction_ratio_estimate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overprediction Ratio Estimate"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "metric_unit": {
+            "type": "string",
+            "title": "Metric Unit"
+          },
+          "measurement_count": {
+            "type": "integer",
+            "title": "Measurement Count"
+          },
+          "observed_days": {
+            "type": "integer",
+            "title": "Observed Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "sample_count",
+          "predicted_days",
+          "actual_days_estimate",
+          "actual_days_min",
+          "actual_days_max",
+          "is_estimate",
+          "overprediction_ratio_estimate",
+          "status",
+          "metric_unit",
+          "measurement_count",
+          "observed_days"
+        ],
+        "title": "CategoryStatistic"
+      },
+      "CheckoutOutput": {
+        "properties": {
+          "subtotal": {
+            "type": "integer",
+            "title": "Subtotal"
+          },
+          "discount": {
+            "type": "integer",
+            "title": "Discount"
+          },
+          "shipping": {
+            "type": "integer",
+            "title": "Shipping"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "subtotal",
+          "discount",
+          "shipping",
+          "total"
+        ],
+        "title": "CheckoutOutput"
+      },
+      "DecisionCard": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "title": "Item Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "HOLD"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision"
+          },
+          "result": {
+            "$ref": "#/components/schemas/SimulationResult"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_id",
+          "name",
+          "decision",
+          "result"
+        ],
+        "title": "DecisionCard"
+      },
+      "DecisionRequest": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "BUY",
+              "HOLD",
+              "GIVE_UP"
+            ],
+            "title": "Decision"
+          },
+          "purchased_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purchased On"
+          },
+          "actual_price": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Price"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "DecisionRequest"
+      },
+      "DiscountDecision": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "NEEDED",
+              "REMOVE_EXTRA"
+            ],
+            "title": "Decision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "DiscountDecision"
+      },
+      "DiscountInput": {
+        "properties": {
+          "original_subtotal": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Original Subtotal"
+          },
+          "additional_subtotal": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Additional Subtotal"
+          },
+          "discount_minimum": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Discount Minimum",
+            "default": 0
+          },
+          "discount_percent": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 0.0,
+            "title": "Discount Percent",
+            "default": 0
+          },
+          "discount_fixed": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Discount Fixed",
+            "default": 0
+          },
+          "shipping_fee": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "minimum": 0.0,
+            "title": "Shipping Fee",
+            "default": 0
+          },
+          "free_shipping_minimum": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Shipping Minimum"
+          },
+          "shipping_threshold_basis": {
+            "type": "string",
+            "enum": [
+              "BEFORE_DISCOUNT",
+              "AFTER_DISCOUNT"
+            ],
+            "title": "Shipping Threshold Basis",
+            "default": "BEFORE_DISCOUNT"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "original_subtotal",
+          "additional_subtotal"
+        ],
+        "title": "DiscountInput"
+      },
+      "DiscountOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "inputs": {
+            "$ref": "#/components/schemas/DiscountInput"
+          },
+          "original": {
+            "$ref": "#/components/schemas/CheckoutOutput"
+          },
+          "expanded": {
+            "$ref": "#/components/schemas/CheckoutOutput"
+          },
+          "extra_spending": {
+            "type": "integer",
+            "title": "Extra Spending"
+          },
+          "remaining_to_free_shipping": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining To Free Shipping"
+          },
+          "pay_shipping_saves": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pay Shipping Saves"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "NEEDED",
+                  "REMOVE_EXTRA"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "inputs",
+          "original",
+          "expanded",
+          "extra_spending",
+          "remaining_to_free_shipping",
+          "pay_shipping_saves",
+          "message",
+          "decision"
+        ],
+        "title": "DiscountOutput"
+      },
+      "Discovery": {
+        "properties": {
+          "category": {
+            "type": "string",
+            "title": "Category"
+          },
+          "sample_count": {
+            "type": "integer",
+            "title": "Sample Count"
+          },
+          "predicted_days": {
+            "type": "number",
+            "title": "Predicted Days"
+          },
+          "actual_days_estimate": {
+            "type": "number",
+            "title": "Actual Days Estimate"
+          },
+          "actual_days_min": {
+            "type": "number",
+            "title": "Actual Days Min"
+          },
+          "actual_days_max": {
+            "type": "number",
+            "title": "Actual Days Max"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate"
+          },
+          "overprediction_ratio_estimate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overprediction Ratio Estimate"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "metric_unit": {
+            "type": "string",
+            "title": "Metric Unit"
+          },
+          "measurement_count": {
+            "type": "integer",
+            "title": "Measurement Count"
+          },
+          "observed_days": {
+            "type": "integer",
+            "title": "Observed Days"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "category",
+          "sample_count",
+          "predicted_days",
+          "actual_days_estimate",
+          "actual_days_min",
+          "actual_days_max",
+          "is_estimate",
+          "overprediction_ratio_estimate",
+          "status",
+          "metric_unit",
+          "measurement_count",
+          "observed_days",
+          "message"
+        ],
+        "title": "Discovery"
+      },
+      "DraftAnalysis": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemDraft"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "title": "Items"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Warnings"
+          },
+          "analysis_method": {
+            "type": "string",
+            "enum": [
+              "text",
+              "vision",
+              "ocr",
+              "manual"
+            ],
+            "title": "Analysis Method"
+          },
+          "selection_summary": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "integer"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Selection Summary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "analysis_method"
+        ],
+        "title": "DraftAnalysis"
+      },
+      "ExpenseInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount"
+          },
+          "spent_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Spent On"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "amount",
+          "spent_on"
+        ],
+        "title": "ExpenseInput"
+      },
+      "ExpenseList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ExpenseOutput"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "month",
+          "limit",
+          "offset"
+        ],
+        "title": "ExpenseList"
+      },
+      "ExpenseOutput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount"
+          },
+          "spent_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Spent On"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 500
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          },
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "voided": {
+            "type": "boolean",
+            "title": "Voided"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "amount",
+          "spent_on",
+          "id",
+          "source",
+          "voided"
+        ],
+        "title": "ExpenseOutput"
+      },
+      "GoalCandidate": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "title": "Item Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "target_amount": {
+            "type": "integer",
+            "title": "Target Amount"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_id",
+          "name",
+          "target_amount",
+          "source_url",
+          "image_url"
+        ],
+        "title": "GoalCandidate"
+      },
+      "GoalInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "target_amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Target Amount"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "target_amount"
+        ],
+        "title": "GoalInput"
+      },
+      "GoalOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "target_amount": {
+            "type": "integer",
+            "title": "Target Amount"
+          },
+          "active": {
+            "type": "boolean",
+            "title": "Active"
+          },
+          "saved_amount": {
+            "type": "integer",
+            "title": "Saved Amount"
+          },
+          "remaining_amount": {
+            "type": "integer",
+            "title": "Remaining Amount",
+            "default": 0
+          },
+          "progress_percent": {
+            "type": "number",
+            "title": "Progress Percent"
+          },
+          "achieved": {
+            "type": "boolean",
+            "title": "Achieved"
+          },
+          "is_virtual": {
+            "type": "boolean",
+            "title": "Is Virtual"
+          },
+          "daily_savings": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Savings"
+          },
+          "estimated_completion_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Estimated Completion On"
+          },
+          "remaining_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Days"
+          },
+          "resisted_count": {
+            "type": "integer",
+            "title": "Resisted Count",
+            "default": 0
+          },
+          "elapsed_days": {
+            "type": "integer",
+            "title": "Elapsed Days",
+            "default": 0
+          },
+          "most_resisted_item": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Most Resisted Item"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "achieved_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Achieved On"
+          },
+          "currently_funded": {
+            "type": "boolean",
+            "title": "Currently Funded",
+            "default": false
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "can_shop": {
+            "type": "boolean",
+            "title": "Can Shop",
+            "default": false
+          },
+          "shelf_count": {
+            "type": "integer",
+            "title": "Shelf Count",
+            "default": 0
+          },
+          "shelf_url": {
+            "type": "string",
+            "title": "Shelf Url",
+            "default": "/api/v1/goals/shelf"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "target_amount",
+          "active",
+          "saved_amount",
+          "progress_percent",
+          "achieved",
+          "is_virtual"
+        ],
+        "title": "GoalOutput"
+      },
+      "GoalPatch": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "target_amount": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Amount"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "GoalPatch"
+      },
+      "GoalPreviewInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "target_amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Target Amount"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "CHANGE",
+              "NEXT"
+            ],
+            "title": "Mode"
+          },
+          "current_goal_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 36,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Goal Id"
+          },
+          "carry_savings": {
+            "type": "boolean",
+            "title": "Carry Savings",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "target_amount",
+          "mode"
+        ],
+        "title": "GoalPreviewInput"
+      },
+      "GoalPreviewOutput": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "CHANGE",
+              "NEXT"
+            ],
+            "title": "Mode"
+          },
+          "current_goal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Current Goal Id"
+          },
+          "starting_saved_amount": {
+            "type": "integer",
+            "title": "Starting Saved Amount"
+          },
+          "display_starting_amount": {
+            "type": "integer",
+            "title": "Display Starting Amount"
+          },
+          "remaining_amount": {
+            "type": "integer",
+            "title": "Remaining Amount"
+          },
+          "progress_percent": {
+            "type": "number",
+            "title": "Progress Percent"
+          },
+          "achieved": {
+            "type": "boolean",
+            "title": "Achieved"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "current_goal_id",
+          "starting_saved_amount",
+          "display_starting_amount",
+          "remaining_amount",
+          "progress_percent",
+          "achieved",
+          "message"
+        ],
+        "title": "GoalPreviewOutput"
+      },
+      "GoalReplacementInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "target_amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Target Amount"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "minLength": 9
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "current_goal_id": {
+            "type": "string",
+            "maxLength": 36,
+            "minLength": 1,
+            "title": "Current Goal Id"
+          },
+          "carry_savings": {
+            "type": "boolean",
+            "title": "Carry Savings",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "target_amount",
+          "current_goal_id"
+        ],
+        "title": "GoalReplacementInput"
+      },
+      "GoalReplacementOutput": {
+        "properties": {
+          "goal": {
+            "$ref": "#/components/schemas/GoalOutput"
+          },
+          "previous_goal_id": {
+            "type": "string",
+            "title": "Previous Goal Id"
+          },
+          "carried_amount": {
+            "type": "integer",
+            "title": "Carried Amount"
+          },
+          "retained_amount": {
+            "type": "integer",
+            "title": "Retained Amount"
+          }
+        },
+        "type": "object",
+        "required": [
+          "goal",
+          "previous_goal_id",
+          "carried_amount",
+          "retained_amount"
+        ],
+        "title": "GoalReplacementOutput"
+      },
+      "GoalSetupOutput": {
+        "properties": {
+          "mode": {
+            "type": "string",
+            "enum": [
+              "FIRST",
+              "CHANGE",
+              "NEXT"
+            ],
+            "title": "Mode"
+          },
+          "current_goal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GoalOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unallocated_savings": {
+            "type": "integer",
+            "title": "Unallocated Savings"
+          },
+          "candidates": {
+            "items": {
+              "$ref": "#/components/schemas/GoalCandidate"
+            },
+            "type": "array",
+            "title": "Candidates"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "mode",
+          "current_goal",
+          "unallocated_savings",
+          "candidates",
+          "limit",
+          "offset"
+        ],
+        "title": "GoalSetupOutput"
+      },
+      "GuestSessionOutput": {
+        "properties": {
+          "guest_id": {
+            "type": "string",
+            "title": "Guest Id"
+          },
+          "access_token": {
+            "type": "string",
+            "title": "Access Token"
+          },
+          "token_type": {
+            "type": "string",
+            "const": "bearer",
+            "title": "Token Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "guest_id",
+          "access_token",
+          "token_type"
+        ],
+        "title": "GuestSessionOutput"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HomeOutput": {
+        "properties": {
+          "today": {
+            "$ref": "#/components/schemas/TodayOutput"
+          },
+          "goal": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GoalOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "wallet": {
+            "$ref": "#/components/schemas/WalletSummary"
+          },
+          "simulations": {
+            "items": {
+              "$ref": "#/components/schemas/ItemOutput"
+            },
+            "type": "array",
+            "title": "Simulations"
+          }
+        },
+        "type": "object",
+        "required": [
+          "today",
+          "goal",
+          "wallet",
+          "simulations"
+        ],
+        "title": "HomeOutput"
+      },
+      "ImpulseDecision": {
+        "properties": {
+          "decision": {
+            "type": "string",
+            "enum": [
+              "RESISTED",
+              "PURCHASED",
+              "CANCELLED"
+            ],
+            "title": "Decision"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "decision"
+        ],
+        "title": "ImpulseDecision"
+      },
+      "ImpulseInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "amount": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Amount"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "amount"
+        ],
+        "title": "ImpulseInput"
+      },
+      "ImpulseOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "amount": {
+            "type": "integer",
+            "title": "Amount"
+          },
+          "goal_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Goal Id"
+          },
+          "decision": {
+            "type": "string",
+            "title": "Decision"
+          },
+          "budget_month": {
+            "type": "string",
+            "title": "Budget Month"
+          },
+          "available_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Available Amount"
+          },
+          "delay_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Delay Days"
+          },
+          "comparison_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Reason"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "if_resisted_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Resisted On"
+          },
+          "if_purchased_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "If Purchased On"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "amount",
+          "goal_id",
+          "decision",
+          "budget_month",
+          "available_amount",
+          "delay_days",
+          "comparison_reason",
+          "message"
+        ],
+        "title": "ImpulseOutput"
+      },
+      "ItemDraft": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "supplemental_question": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Supplemental Question"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ItemSource"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "image_crop": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Crop"
+          },
+          "category_source": {
+            "type": "string",
+            "enum": [
+              "AI",
+              "FALLBACK"
+            ],
+            "title": "Category Source",
+            "default": "AI"
+          },
+          "simulation_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Simulation Days",
+            "readOnly": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "category",
+          "supplemental_question",
+          "source",
+          "simulation_days"
+        ],
+        "title": "ItemDraft"
+      },
+      "ItemDraftRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "ItemDraftRequest"
+      },
+      "ItemInput": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Name"
+          },
+          "price": {
+            "type": "integer",
+            "maximum": 1000000000000.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Price"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "purchase_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PurchaseReason"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "deprecated": true
+          },
+          "purchase_reasons": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseReason"
+            },
+            "type": "array",
+            "maxItems": 8,
+            "title": "Purchase Reasons"
+          },
+          "reason_other_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Other Text"
+          },
+          "sale_ends_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sale Ends On"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ItemSource",
+            "default": "MANUAL"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^https://"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "supplemental_question": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supplemental Question"
+          },
+          "question_mode": {
+            "type": "string",
+            "enum": [
+              "LOCAL",
+              "ADAPTIVE",
+              "LEGACY"
+            ],
+            "title": "Question Mode",
+            "default": "LOCAL"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name",
+          "price",
+          "category"
+        ],
+        "title": "ItemInput"
+      },
+      "ItemListOutput": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ItemOutput"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "discount": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Discount"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "limit",
+          "offset"
+        ],
+        "title": "ItemListOutput"
+      },
+      "ItemOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "price": {
+            "type": "integer",
+            "title": "Price"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "purchase_reason": {
+            "$ref": "#/components/schemas/PurchaseReason"
+          },
+          "purchase_reasons": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseReason"
+            },
+            "type": "array",
+            "title": "Purchase Reasons"
+          },
+          "reason_other_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Other Text"
+          },
+          "sale_ends_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sale Ends On"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
+          },
+          "wallet_comparison": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Wallet Comparison"
+          },
+          "source": {
+            "$ref": "#/components/schemas/ItemSource"
+          },
+          "decision": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "BUY",
+                  "HOLD",
+                  "GIVE_UP"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision"
+          },
+          "simulation": {
+            "$ref": "#/components/schemas/SimulationSummary"
+          },
+          "purchase": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PurchaseOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "price",
+          "category",
+          "purchase_reason",
+          "source",
+          "decision",
+          "simulation",
+          "purchase"
+        ],
+        "title": "ItemOutput"
+      },
+      "ItemPatch": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "price": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Price"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Category"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "purchase_reason": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PurchaseReason"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "purchase_reasons": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PurchaseReason"
+                },
+                "type": "array",
+                "maxItems": 8,
+                "minItems": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Purchase Reasons"
+          },
+          "reason_other_text": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason Other Text"
+          },
+          "sale_ends_on": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sale Ends On"
+          },
+          "supplemental_question": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Supplemental Question"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ItemPatch"
+      },
+      "ItemSource": {
+        "type": "string",
+        "enum": [
+          "MANUAL",
+          "SCREENSHOT",
+          "URL",
+          "SHARE"
+        ],
+        "title": "ItemSource"
+      },
+      "LocalQuestionRequest": {
+        "properties": {
+          "recent_templates": {
+            "items": {
+              "$ref": "#/components/schemas/RecentTemplate"
+            },
+            "type": "array",
+            "maxItems": 365,
+            "title": "Recent Templates"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LocalQuestionRequest"
+      },
+      "LocalResponse": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "template_code": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Template Code"
+          },
+          "question": {
+            "type": "string",
+            "maxLength": 300,
+            "minLength": 1,
+            "title": "Question"
+          },
+          "answer": {
+            "$ref": "#/components/schemas/SimulationAnswerInput"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date",
+          "template_code",
+          "question",
+          "answer"
+        ],
+        "title": "LocalResponse"
+      },
+      "LocalSummaryRequest": {
+        "properties": {
+          "responses": {
+            "items": {
+              "$ref": "#/components/schemas/LocalResponse"
+            },
+            "type": "array",
+            "maxItems": 365,
+            "title": "Responses"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LocalSummaryRequest"
+      },
+      "ProductUrlInput": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "maxLength": 2048,
+            "minLength": 9,
+            "pattern": "^https://",
+            "title": "Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "url"
+        ],
+        "title": "ProductUrlInput"
+      },
+      "PurchaseAnswerInput": {
+        "properties": {
+          "choice_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choice Code"
+          },
+          "number_value": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 1000000000000.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PurchaseAnswerInput"
+      },
+      "PurchaseAnswerOutput": {
+        "properties": {
+          "choice_code": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choice Code"
+          },
+          "number_value": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number Value"
+          },
+          "answered_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Answered On"
+          }
+        },
+        "type": "object",
+        "required": [
+          "choice_code",
+          "number_value",
+          "answered_on"
+        ],
+        "title": "PurchaseAnswerOutput"
+      },
+      "PurchaseOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "item_id": {
+            "type": "string",
+            "title": "Item Id"
+          },
+          "purchased_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Purchased On"
+          },
+          "actual_price": {
+            "type": "integer",
+            "title": "Actual Price"
+          },
+          "review_due_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Review Due On"
+          },
+          "review_start": {
+            "type": "string",
+            "format": "date",
+            "title": "Review Start"
+          },
+          "review_end": {
+            "type": "string",
+            "format": "date",
+            "title": "Review End"
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReviewOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "actual_usage_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Usage Rate"
+          },
+          "expected_usage_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Usage Rate"
+          },
+          "difference_percentage_points": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Difference Percentage Points"
+          },
+          "comparison_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Reason"
+          },
+          "item_name": {
+            "type": "string",
+            "title": "Item Name",
+            "default": ""
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "default": ""
+          },
+          "review_options": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Review Options"
+          },
+          "expected_days_in_review_window": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Days In Review Window"
+          },
+          "actual_days_estimate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Actual Days Estimate"
+          },
+          "overprediction_ratio_estimate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overprediction Ratio Estimate"
+          },
+          "estimate_method": {
+            "type": "string",
+            "title": "Estimate Method",
+            "default": "range_midpoint"
+          },
+          "is_estimate": {
+            "type": "boolean",
+            "title": "Is Estimate",
+            "default": true
+          },
+          "verdict": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verdict"
+          },
+          "pre_purchase_baseline": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pre Purchase Baseline"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "item_id",
+          "purchased_on",
+          "actual_price",
+          "review_due_on",
+          "review_start",
+          "review_end",
+          "review",
+          "actual_usage_rate",
+          "expected_usage_rate",
+          "difference_percentage_points",
+          "comparison_reason"
+        ],
+        "title": "PurchaseOutput"
+      },
+      "PurchaseQuestionHistory": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseQuestionOutput"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "usage_summary": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Usage Summary"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "usage_summary",
+          "limit",
+          "offset"
+        ],
+        "title": "PurchaseQuestionHistory"
+      },
+      "PurchaseQuestionOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "purchase_id": {
+            "type": "string",
+            "title": "Purchase Id"
+          },
+          "question_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Question Date"
+          },
+          "template_code": {
+            "type": "string",
+            "title": "Template Code"
+          },
+          "template_version": {
+            "type": "string",
+            "title": "Template Version"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "IMMEDIATE",
+              "USAGE",
+              "VALUE",
+              "MOTIVE",
+              "LONG_TERM"
+            ],
+            "title": "Stage"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "reference_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Text"
+          },
+          "answer_spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Answer Spec"
+          },
+          "context": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Context"
+          },
+          "generation_method": {
+            "type": "string",
+            "enum": [
+              "AI",
+              "TEMPLATE"
+            ],
+            "title": "Generation Method"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PurchaseAnswerOutput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "comparison": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "purchase_id",
+          "question_date",
+          "template_code",
+          "template_version",
+          "stage",
+          "question",
+          "reference_text",
+          "answer_spec",
+          "context",
+          "generation_method",
+          "fallback_reason",
+          "answer",
+          "comparison"
+        ],
+        "title": "PurchaseQuestionOutput"
+      },
+      "PurchaseReason": {
+        "type": "string",
+        "enum": [
+          "ADVERTISEMENT",
+          "DISCOUNT_LIMITED",
+          "EXTRA_DISCOUNT",
+          "STRESS",
+          "SOCIAL",
+          "NECESSITY",
+          "LONG_WANTED",
+          "OTHER"
+        ],
+        "title": "PurchaseReason"
+      },
+      "PushTokenOutput": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled"
+          }
+        },
+        "type": "object",
+        "required": [
+          "enabled"
+        ],
+        "title": "PushTokenOutput"
+      },
+      "PushTokenRequest": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "maxLength": 1024,
+            "minLength": 10,
+            "pattern": "^[A-Za-z0-9_:\\-]+$",
+            "title": "Token"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "title": "PushTokenRequest"
+      },
+      "QuestionCard": {
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "title": "Item Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "answer_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Answer Date"
+          },
+          "measurement_question": {
+            "type": "string",
+            "title": "Measurement Question"
+          },
+          "supplemental_question": {
+            "type": "string",
+            "title": "Supplemental Question"
+          },
+          "answer_options": {
+            "items": {
+              "$ref": "#/components/schemas/AnswerOption"
+            },
+            "type": "array",
+            "title": "Answer Options"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question",
+            "default": ""
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "default": ""
+          },
+          "current_day": {
+            "type": "integer",
+            "title": "Current Day",
+            "default": 0
+          },
+          "duration_days": {
+            "type": "integer",
+            "title": "Duration Days",
+            "default": 0
+          },
+          "calibration": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Calibration"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "item_id",
+          "simulation_id",
+          "name",
+          "answer_date",
+          "measurement_question",
+          "supplemental_question",
+          "answer_options"
+        ],
+        "title": "QuestionCard"
+      },
+      "ReasonStatistic": {
+        "properties": {
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "registered_count": {
+            "type": "integer",
+            "title": "Registered Count"
+          },
+          "decided_count": {
+            "type": "integer",
+            "title": "Decided Count"
+          },
+          "abandoned_count": {
+            "type": "integer",
+            "title": "Abandoned Count"
+          },
+          "abandonment_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Abandonment Rate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "reason",
+          "registered_count",
+          "decided_count",
+          "abandoned_count",
+          "abandonment_rate"
+        ],
+        "title": "ReasonStatistic"
+      },
+      "RecentTemplate": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "template_code": {
+            "type": "string",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Template Code"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "date",
+          "template_code"
+        ],
+        "title": "RecentTemplate"
+      },
+      "ReportOutput": {
+        "properties": {
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "registered_count": {
+            "type": "integer",
+            "title": "Registered Count"
+          },
+          "bye_count": {
+            "type": "integer",
+            "title": "Bye Count"
+          },
+          "saved_amount": {
+            "type": "integer",
+            "title": "Saved Amount"
+          },
+          "categories": {
+            "items": {
+              "$ref": "#/components/schemas/CategoryStatistic"
+            },
+            "type": "array",
+            "title": "Categories"
+          },
+          "purchase_reasons": {
+            "items": {
+              "$ref": "#/components/schemas/ReasonStatistic"
+            },
+            "type": "array",
+            "title": "Purchase Reasons"
+          },
+          "discovery": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Discovery"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "metric_unit": {
+            "type": "string",
+            "title": "Metric Unit"
+          },
+          "estimate_method": {
+            "type": "string",
+            "title": "Estimate Method"
+          },
+          "empty": {
+            "type": "boolean",
+            "title": "Empty"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "registered_count",
+          "bye_count",
+          "saved_amount",
+          "categories",
+          "purchase_reasons",
+          "discovery",
+          "metric_unit",
+          "estimate_method",
+          "empty"
+        ],
+        "title": "ReportOutput"
+      },
+      "ReviewOutput": {
+        "properties": {
+          "used_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used Days"
+          },
+          "frequency": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frequency"
+          },
+          "min_days": {
+            "type": "number",
+            "title": "Min Days",
+            "default": 0
+          },
+          "max_days": {
+            "type": "number",
+            "title": "Max Days",
+            "default": 0
+          },
+          "estimated_days": {
+            "type": "number",
+            "title": "Estimated Days",
+            "default": 0
+          },
+          "submitted_on": {
+            "type": "string",
+            "format": "date",
+            "title": "Submitted On"
+          },
+          "late_days": {
+            "type": "integer",
+            "title": "Late Days"
+          }
+        },
+        "type": "object",
+        "required": [
+          "used_days",
+          "submitted_on",
+          "late_days"
+        ],
+        "title": "ReviewOutput"
+      },
+      "ReviewRequest": {
+        "properties": {
+          "frequency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "ALMOST_DAILY",
+                  "OFTEN",
+                  "SOMETIMES",
+                  "NEVER"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Frequency"
+          },
+          "used_days": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 14.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Used Days",
+            "deprecated": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ReviewRequest"
+      },
+      "SimulationAnswerInput": {
+        "properties": {
+          "choice_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 32,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choice Code"
+          },
+          "number_value": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 30.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number Value"
+          },
+          "text_value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 300,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Text Value"
+          },
+          "object_value": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Object Value"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "SimulationAnswerInput"
+      },
+      "SimulationQuestionHistory": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SimulationQuestionOutput"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "baseline": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Baseline"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "baseline",
+          "limit",
+          "offset"
+        ],
+        "title": "SimulationQuestionHistory"
+      },
+      "SimulationQuestionOutput": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "question_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Question Date"
+          },
+          "template_code": {
+            "type": "string",
+            "title": "Template Code"
+          },
+          "template_version": {
+            "type": "string",
+            "title": "Template Version"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "TRIGGER",
+              "NECESSITY",
+              "PREDICTION",
+              "VALUE",
+              "PERSISTENCE"
+            ],
+            "title": "Stage"
+          },
+          "question": {
+            "type": "string",
+            "title": "Question"
+          },
+          "reference_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference Text"
+          },
+          "answer_spec": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Answer Spec"
+          },
+          "context": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Context"
+          },
+          "generation_method": {
+            "type": "string",
+            "enum": [
+              "AI",
+              "TEMPLATE"
+            ],
+            "title": "Generation Method"
+          },
+          "fallback_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fallback Reason"
+          },
+          "answer": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Answer"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "simulation_id",
+          "question_date",
+          "template_code",
+          "template_version",
+          "stage",
+          "question",
+          "reference_text",
+          "answer_spec",
+          "context",
+          "generation_method",
+          "fallback_reason",
+          "answer"
+        ],
+        "title": "SimulationQuestionOutput"
+      },
+      "SimulationResult": {
+        "properties": {
+          "simulation_id": {
+            "type": "string",
+            "title": "Simulation Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "ACTIVE",
+              "COMPLETED",
+              "EARLY_PURCHASED",
+              "ON_HOLD"
+            ],
+            "title": "Status"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "end_date_exclusive": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date Exclusive"
+          },
+          "duration_days": {
+            "type": "integer",
+            "title": "Duration Days"
+          },
+          "observed_days": {
+            "type": "integer",
+            "title": "Observed Days"
+          },
+          "answered_days": {
+            "type": "integer",
+            "title": "Answered Days"
+          },
+          "expected_used_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Used Days"
+          },
+          "unused_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unused Days"
+          },
+          "unsure_days": {
+            "type": "integer",
+            "title": "Unsure Days"
+          },
+          "unanswered_days": {
+            "type": "integer",
+            "title": "Unanswered Days"
+          },
+          "pending_days": {
+            "type": "integer",
+            "title": "Pending Days"
+          },
+          "definite_answer_days": {
+            "type": "integer",
+            "title": "Definite Answer Days"
+          },
+          "answer_coverage": {
+            "type": "number",
+            "title": "Answer Coverage"
+          },
+          "expected_usage_rate": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Usage Rate"
+          },
+          "expected_cost_per_used_day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expected Cost Per Used Day"
+          },
+          "price_snapshot": {
+            "type": "integer",
+            "title": "Price Snapshot"
+          },
+          "comparison_eligible": {
+            "type": "boolean",
+            "title": "Comparison Eligible"
+          },
+          "comparison_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comparison Reason"
+          },
+          "answer_timeline": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Answer Timeline"
+          },
+          "response_summary": {
+            "type": "string",
+            "title": "Response Summary",
+            "default": ""
+          },
+          "purchase_reasons": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseReason"
+            },
+            "type": "array",
+            "title": "Purchase Reasons"
+          },
+          "reason_history": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Reason History"
+          },
+          "metric_unit": {
+            "type": "string",
+            "title": "Metric Unit",
+            "default": "usage_days"
+          },
+          "question_mode": {
+            "type": "string",
+            "enum": [
+              "LOCAL",
+              "ADAPTIVE",
+              "LEGACY"
+            ],
+            "title": "Question Mode",
+            "default": "LEGACY"
+          },
+          "prediction_window_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Prediction Window Days"
+          },
+          "pre_purchase_baseline": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Pre Purchase Baseline"
+          }
+        },
+        "type": "object",
+        "required": [
+          "simulation_id",
+          "status",
+          "start_date",
+          "end_date_exclusive",
+          "duration_days",
+          "observed_days",
+          "answered_days",
+          "expected_used_days",
+          "unused_days",
+          "unsure_days",
+          "unanswered_days",
+          "pending_days",
+          "definite_answer_days",
+          "answer_coverage",
+          "expected_usage_rate",
+          "expected_cost_per_used_day",
+          "price_snapshot",
+          "comparison_eligible",
+          "comparison_reason"
+        ],
+        "title": "SimulationResult"
+      },
+      "SimulationSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "ACTIVE",
+              "COMPLETED",
+              "EARLY_PURCHASED",
+              "ON_HOLD"
+            ],
+            "title": "Status"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "title": "Start Date"
+          },
+          "end_date_exclusive": {
+            "type": "string",
+            "format": "date",
+            "title": "End Date Exclusive"
+          },
+          "duration_days": {
+            "type": "integer",
+            "title": "Duration Days"
+          },
+          "measurement_question": {
+            "type": "string",
+            "title": "Measurement Question"
+          },
+          "supplemental_question": {
+            "type": "string",
+            "title": "Supplemental Question"
+          },
+          "answer_options": {
+            "items": {
+              "$ref": "#/components/schemas/AnswerOption"
+            },
+            "type": "array",
+            "title": "Answer Options"
+          },
+          "current_day": {
+            "type": "integer",
+            "title": "Current Day",
+            "default": 0
+          },
+          "question": {
+            "type": "string",
+            "title": "Question",
+            "default": ""
+          },
+          "question_mode": {
+            "type": "string",
+            "enum": [
+              "LOCAL",
+              "ADAPTIVE",
+              "LEGACY"
+            ],
+            "title": "Question Mode",
+            "default": "LEGACY"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "status",
+          "start_date",
+          "end_date_exclusive",
+          "duration_days",
+          "measurement_question",
+          "supplemental_question",
+          "answer_options"
+        ],
+        "title": "SimulationSummary"
+      },
+      "TodayOutput": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "title": "Date"
+          },
+          "questions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestionCard"
+            },
+            "type": "array",
+            "title": "Questions"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/DecisionCard"
+            },
+            "type": "array",
+            "title": "Decisions"
+          },
+          "reviews": {
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOutput"
+            },
+            "type": "array",
+            "title": "Reviews"
+          },
+          "answered": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Answered"
+          },
+          "summary": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Summary"
+          },
+          "next_notification_at": {
+            "type": "string",
+            "title": "Next Notification At",
+            "default": ""
+          },
+          "purchase_questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Purchase Questions"
+          },
+          "purchase_answered": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Purchase Answered"
+          },
+          "pre_purchase_questions": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Pre Purchase Questions"
+          },
+          "pre_purchase_answered": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "type": "array",
+            "title": "Pre Purchase Answered"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "questions",
+          "decisions",
+          "reviews"
+        ],
+        "title": "TodayOutput"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WalletComparison": {
+        "properties": {
+          "remaining_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Amount"
+          },
+          "remaining_after_purchase": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining After Purchase"
+          },
+          "over_budget_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Over Budget Amount"
+          },
+          "budget_required": {
+            "type": "boolean",
+            "title": "Budget Required"
+          }
+        },
+        "type": "object",
+        "required": [
+          "remaining_amount",
+          "remaining_after_purchase",
+          "over_budget_amount",
+          "budget_required"
+        ],
+        "title": "WalletComparison"
+      },
+      "WalletOutput": {
+        "properties": {
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "budget_required": {
+            "type": "boolean",
+            "title": "Budget Required"
+          },
+          "needs_monthly_confirmation": {
+            "type": "boolean",
+            "title": "Needs Monthly Confirmation"
+          },
+          "free_spending_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Spending Amount"
+          },
+          "spent_amount": {
+            "type": "integer",
+            "title": "Spent Amount"
+          },
+          "remaining_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Amount"
+          },
+          "planned_savings": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Savings"
+          },
+          "daily_savings": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Savings"
+          },
+          "is_account_balance": {
+            "type": "boolean",
+            "title": "Is Account Balance"
+          },
+          "plan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/BudgetInput"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "budget_required",
+          "needs_monthly_confirmation",
+          "free_spending_amount",
+          "spent_amount",
+          "remaining_amount",
+          "planned_savings",
+          "daily_savings",
+          "is_account_balance",
+          "plan"
+        ],
+        "title": "WalletOutput"
+      },
+      "WalletSummary": {
+        "properties": {
+          "month": {
+            "type": "string",
+            "title": "Month"
+          },
+          "budget_required": {
+            "type": "boolean",
+            "title": "Budget Required"
+          },
+          "needs_monthly_confirmation": {
+            "type": "boolean",
+            "title": "Needs Monthly Confirmation"
+          },
+          "free_spending_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Free Spending Amount"
+          },
+          "spent_amount": {
+            "type": "integer",
+            "title": "Spent Amount"
+          },
+          "remaining_amount": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Remaining Amount"
+          },
+          "planned_savings": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Savings"
+          },
+          "daily_savings": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Daily Savings"
+          },
+          "is_account_balance": {
+            "type": "boolean",
+            "title": "Is Account Balance"
+          }
+        },
+        "type": "object",
+        "required": [
+          "month",
+          "budget_required",
+          "needs_monthly_confirmation",
+          "free_spending_amount",
+          "spent_amount",
+          "remaining_amount",
+          "planned_savings",
+          "daily_savings",
+          "is_account_balance"
+        ],
+        "title": "WalletSummary"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

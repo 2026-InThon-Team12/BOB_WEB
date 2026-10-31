@@ -1,0 +1,1 @@
+export default [{files:['**/*.js'],languageOptions:{ecmaVersion:'latest',sourceType:'module'},rules:{'no-debugger':'error','no-constant-condition':'error','no-unreachable':'error','valid-typeof':'error'}}];

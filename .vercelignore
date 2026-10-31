@@ -1,0 +1,16 @@
+# Upload only the production source and build configuration.
+*
+!index.html
+!app.js
+!api.js
+!app.css
+!landing.css
+!bob-logo.png
+!brand-0.png
+!brand-1.png
+!mascot-brown.glb
+!model-viewer.min.js
+!MODEL-VIEWER-LICENSE.txt
+!package.json
+!build.mjs
+!vercel.json
