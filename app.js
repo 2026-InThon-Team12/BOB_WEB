@@ -350,7 +350,7 @@ if(typeof document!=='undefined') {
  document.addEventListener('pointercancel',cancelSwipe);
  document.addEventListener('lostpointercapture',cancelSwipe);
  document.addEventListener('keydown',event=>{if(!(event.target instanceof Element))return;if(event.key==='Escape'&&swipeDrag){resetSwipe(swipeDrag.card);swipeDrag=null;return;}if(event.repeat||event.isComposing||location.hash!=='#/WebCheck'||event.target.closest('input,textarea,select,button,a,summary,[contenteditable="true"]')||query('dialog[open]'))return;const answer={ArrowRight:'yes',ArrowLeft:'no',ArrowUp:'unsure'}[event.key];if(answer){event.preventDefault();void submitSwipe(query('.swipe-card')?.dataset.itemId,answer);}});
- window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0);query('#bob-main')?.focus();});
+ window.addEventListener('hashchange',()=>{render();if(location.hash.startsWith('#/')){window.scrollTo(0,0);query('#bob-main')?.focus();}});
  window.addEventListener('storage',event=>{if(event.key===KEY){try{state=event.newValue?validate(JSON.parse(event.newValue)):fresh();render();notify('다른 탭에서 변경한 기록을 반영했어요.');}catch{notify('다른 탭의 데이터를 읽지 못했어요. 새로고침 전에 백업해 주세요.');}}});
  setInterval(()=>{if(!document.hidden && today()!==lastDay && !dirty){lastDay=today();render();}},30000);
  document.addEventListener('visibilitychange',()=>{if(!document.hidden && today()!==lastDay && !dirty){lastDay=today();render();}});
