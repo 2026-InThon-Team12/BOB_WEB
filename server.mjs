@@ -1,7 +1,7 @@
 import {createServer} from 'node:http';
 import {readFile} from 'node:fs/promises';
 import {resolve,extname} from 'node:path';
-const publicFiles=new Set(['index.html','model-viewer.min.js','MODEL-VIEWER-LICENSE.txt','mascot-brown.glb','landing.css','app.css','app.js','api.js','bob-logo.png','brand-0.png','brand-1.png']);
+const publicFiles=new Set(['index.html','model-viewer.min.js','MODEL-VIEWER-LICENSE.txt','mascot-brown.glb','landing.css','landing.js','app.css','app.js','api.js','bob-logo.png','brand-0.png','brand-1.png']);
 const endpoints=new Set(['/api/v1/guest-sessions','/api/v1/item-drafts','/api/v1/product-url-drafts','/api/v1/cart-extractions']);
 createServer(async(req,res)=>{
  try {

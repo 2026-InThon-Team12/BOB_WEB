@@ -40,6 +40,6 @@ mascot-brown.glb는 제공된 GLB를 scripts/prepare_mascot.py로 변환한 4.7M
 
 Vercel 프로젝트: `mas-f1f6/bob-web`. `vercel.json`의 `framework: null`은 브라우저용 app.js가 Node 서버 진입점으로 오인되는 것을 막습니다. `dist`의 정적 파일과 `/api/v1` 백엔드 프록시를 배포합니다.
 
-다시 배포: `npx --yes vercel@latest deploy --prod --yes --scope mas-f1f6`. `.vercelignore`는 배포에 필요한 파일만 허용합니다. `.vercel`과 `.env*`는 커밋하지 않습니다. GitHub 자동 배포는 아직 연결되지 않았습니다.
+다시 배포: `npx --yes vercel@latest deploy --prod --yes --scope mas-f1f6`. `.vercelignore`는 배포에 필요한 파일만 허용합니다. `.vercel`과 `.env*`는 커밋하지 않습니다. GitHub `2026-InThon-Team12/BOB_WEB`의 `main`에 push하면 Vercel 프로덕션으로 자동 배포됩니다.
 
 로컬 주소와 배포 주소의 브라우저 저장소는 분리되어 있습니다. 기존 기록을 옮기려면 로컬 설정에서 백업을 다운로드한 뒤 배포 사이트 설정에서 복원하세요.
