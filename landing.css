@@ -92,3 +92,8 @@ html{scrollbar-width:auto}
 @media (prefers-reduced-motion:reduce) {
  #landing .landing-header-shell { transition:none; }
 }
+
+/* Extend the hero behind the transparent header without shifting its content. */
+#landing { --landing-header-height:80px; }
+#landing .landing-hero { margin-top:calc(-1 * var(--landing-header-height)); padding-top:var(--landing-header-height); }
+@media (max-width:650px) { #landing { --landing-header-height:76px; } }
