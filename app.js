@@ -143,18 +143,25 @@ function recommendCategory(input,composing=false) {
   }catch{if(current())hint.textContent='자동 추천을 불러오지 못했어요. 카테고리를 직접 선택해 주세요.';}
  },600);
 }
+function registrationReasons(suffix='') {
+ return `<fieldset class="item-reasons" data-suffix="${suffix}"><legend>왜 사고 싶어졌나요? <small>이 물건의 구매 이유를 한 개 이상 선택해 주세요.</small></legend><div class="chips">${reasons.map(r=>`<label><input type="checkbox" name="reason${suffix}" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('')}</div><div data-reason-other hidden>${field('other'+suffix,'기타 이유','text','','maxlength="300"')}</div><div data-reason-deadline hidden>${field('deadline'+suffix,'판매 마감일','date','','min="'+today()+'"')}<small>마감일까지 관찰해요. 오늘 마감이면 바로 결정할 수 있어요.</small></div></fieldset>`;
+}
 function registrationRows(){
- if(!aiDrafts.length)return `${field('name','물건 이름','text','','maxlength="120" required aria-describedby="category-hint-name"')}${field('price','가격 (원)','text','','inputmode="numeric" required')}${select('category','카테고리',categories)}${categoryHint()}${field('url','상품 링크 (선택)','url','','placeholder="https://"')}`;
- return `<p>등록할 물건을 선택하고 내용을 확인해 주세요. 한 번에 최대 20개를 등록해요.</p>${aiDrafts.map((d,n)=>`<fieldset class="draft-row"><legend><label><input type="checkbox" name="included" value="${n}" checked> 물건 ${n+1} 등록</label></legend>${field('name-'+n,'물건 이름','text',d.name,'maxlength="120" required aria-describedby="category-hint-name-'+n+'"')}${field('price-'+n,'가격 (원)','text',d.price,'inputmode="numeric" required')}<label>카테고리<select name="category-${n}">${categories.map(c=>`<option ${c===d.category?'selected':''}>${c}</option>`).join('')}</select></label>${categoryHint('name-'+n)}${field('url-'+n,'상품 링크 (선택)','url',d.source_url||'')}<label><input type="checkbox" name="needed" value="${n}" checked> 할인 없이도 필요한 물건</label></fieldset>`).join('')}`;
+ if(!aiDrafts.length)return `${field('name','물건 이름','text','','maxlength="120" required aria-describedby="category-hint-name"')}${field('price','가격 (원)','text','','inputmode="numeric" required')}${select('category','카테고리',categories)}${categoryHint()}${field('url','상품 링크 (선택)','url','','placeholder="https://"')}${registrationReasons()}`;
+ return `<p>등록할 물건을 선택하고 내용을 확인해 주세요. 한 번에 최대 20개를 등록해요.</p>${aiDrafts.map((d,n)=>`<fieldset class="draft-row"><legend><label><input type="checkbox" name="included" value="${n}" checked> 물건 ${n+1} 등록</label></legend>${field('name-'+n,'물건 이름','text',d.name,'maxlength="120" required aria-describedby="category-hint-name-'+n+'"')}${field('price-'+n,'가격 (원)','text',d.price,'inputmode="numeric" required')}<label>카테고리<select name="category-${n}">${categories.map(c=>`<option ${c===d.category?'selected':''}>${c}</option>`).join('')}</select></label>${categoryHint('name-'+n)}${field('url-'+n,'상품 링크 (선택)','url',d.source_url||'')}${registrationReasons('-'+n)}</fieldset>`).join('')}`;
 }
 const registrationModes={image:'장바구니 이미지에서 추출하기',link:'상품 구매 링크로 등록하기',manual:'직접 입력하기'};
 let registrationMode='',registrationBusy=false;
 const registrationPanels=new Map();
-function registrationForm(){return `<form id="add-form" novalidate>${registrationRows()}<fieldset><legend>왜 사고 싶어졌나요? <small>한 개 이상 선택 · 등록할 물건에 공통 적용</small></legend><div class="chips">${reasons.map(r=>`<label><input type="checkbox" name="reason" value="${esc(r)}"><span>${esc(r)}</span></label>`).join('')}</div></fieldset><div id="reason-other" hidden>${field('other','기타 이유','text','','maxlength="300"')}</div><div id="reason-deadline" hidden>${field('deadline','판매 마감일','date','','min="'+today()+'"')}<small>마감일까지 관찰해요. 오늘 마감이면 바로 결정할 수 있어요.</small></div><div id="registration-discount" hidden><h3>추가 할인, 정말 이득일까요?</h3>${!aiDrafts.length?'<label><input type="checkbox" name="needed" value="manual" checked> 할인 없이도 필요한 물건</label>':''}${field('discountMin','할인 최소 금액 (원)','text',30000,'inputmode="numeric"')}${select('discountUnit','할인 종류',['퍼센트','정액'])}${field('discountValue','할인 값 (% 또는 원)','text',10,'inputmode="numeric"')}${field('discountShipping','기본 배송비 (원)','text',3000,'inputmode="numeric"')}${field('discountFree','무료배송 기준 (원, 0이면 없음)','text',40000,'inputmode="numeric"')}${select('discountDecision','등록할 물건',['필요한 것만','전체'])}<p id="registration-comparison" aria-live="polite"></p></div><p>품목·구매 결정은 서버에 반영돼요. 매일 답변은 이 브라우저에 저장하고 결과 요약 시 서버에 전송해요.</p>${formEnd('확인한 물건 등록하기')}`;}
+function registrationForm(){return `<form id="add-form" data-step="items" novalidate><fieldset id="registration-editor">${registrationRows()}<p>품목·구매 결정은 서버에 반영돼요. 매일 답변은 이 브라우저에 저장하고 결과 요약 시 서버에 전송해요.</p></fieldset><div id="registration-discount" hidden></div><p class="form-error" role="alert"></p><button class="primary registration-next" type="submit">확인한 물건 등록하기</button></form>`;}
 function imageImportStatus(){return imageImports.length?`<div id="image-import-status" role="status">${imageImports.map((entry,n)=>`<p>${esc(entry.file.name)} · ${entry.error?'분석 실패':entry.rows?'완료':'분석 대기'}${entry.error?button('다시 분석','retry-image',n):''}</p>`).join('')}</div>`:'';}
+function finishRegistration(saved){
+ aiDrafts=[];imageImports=[];registrationMode='';registrationPanels.clear();dirty=false;
+ location.hash=saved.length?'#/WebItem/'+saved[0].id:'#/WebHome';
+}
 function registrationContent(){
  if(!registrationMode)return '';
- if(registrationMode==='manual'||aiDrafts.length)return `<section class="panel registration-screen"><h2 tabindex="-1">${registrationMode==='manual'?'물건 정보 직접 입력':'가져온 물건 확인'}</h2>${registrationMode!=='manual'?`<p>이름과 가격을 확인한 뒤 등록해 주세요.</p>${imageImportStatus()}${button('다시 가져오기','restart-import','','text-link')}`:''}${registrationForm()}</section>`;
+ if(registrationMode==='manual'||aiDrafts.length)return `<section class="panel registration-screen"><h2 tabindex="-1">${registrationMode==='manual'?'물건 정보 직접 입력':'가져온 물건 확인'}</h2>${registrationMode!=='manual'?`<div class="registration-import"><p>이름과 가격을 확인한 뒤 등록해 주세요.</p>${imageImportStatus()}${button('다시 가져오기','restart-import','','text-link')}</div>`:''}${registrationForm()}</section>`;
  const image=registrationMode==='image';
  return `<section class="panel registration-screen"><h2 tabindex="-1">${image?'캡처에서 가져오기':'링크에서 가져오기'}</h2><p>${image?'장바구니 캡처를 여러 장 선택하면 물건을 한 번에 가져와요.':'상품 구매 링크를 붙여 넣으면 물건 정보를 가져와요.'}</p><form id="ai-form" novalidate>${image?field('image','장바구니 캡처 (최대 10장)','file','','multiple accept="image/png,image/jpeg,image/webp"'):field('url','상품 구매 링크','url','','placeholder="https://" required')}<p>${image?'각 이미지 최대 4MB · PNG, JPEG, WebP':'https로 시작하는 상품 구매 페이지를 입력해 주세요.'}<br>${image?'이미지를':'링크를'} AI 분석 서버로 보내요.</p>${formEnd(image?'캡처에서 물건 가져오기':'링크에서 물건 가져오기')}${imageImportStatus()}</section>`;
 }
@@ -168,7 +175,7 @@ function restoreRegistrationFields(form,data,previousDrafts){
   const match=input.name.match(/-(\d+)$/),row=match?Number(match[1]):['included','needed'].includes(input.name)?Number(input.value):null;
   const oldIndex=row===null?null:previousDrafts.indexOf(aiDrafts[row]);if(oldIndex===-1)continue;
   const name=match?input.name.replace(/-\d+$/,'-'+oldIndex):input.name;
-  if(input instanceof HTMLInputElement&&input.type==='checkbox')input.checked=data.getAll(name).includes(row===null?input.value:String(oldIndex));
+  if(input instanceof HTMLInputElement&&input.type==='checkbox')input.checked=data.getAll(name).includes(input.name==='included'?String(oldIndex):input.value);
   else if(data.has(name))input.value=String(data.get(name));
  }
  refreshRegistration(form);
@@ -186,22 +193,67 @@ function add() {
  if(state.pendingRegistration)return `<section class="panel narrow"><h1>등록 결과를 확인해 주세요</h1><p>요청한 물건의 서버 저장 결과를 아직 확인하지 못했어요. 같은 요청으로 다시 확인하므로 중복 등록되지 않아요.</p><ul>${state.pendingRegistration.items.map(i=>`<li>${esc(i.name)} · ${won(i.price)}</li>`).join('')}</ul>${button('등록 결과 다시 확인','retry-registration','','primary')}${link('WebHome','홈으로','text-link')}</section>`;
  return `<div class="page-title compact-page-title registration-title"><div><span class="eyebrow">NEW SIMULATION</span><h1>물품 등록 방식 선택</h1><p>사고 싶은 물건, 편한 방법으로 올려 주세요.</p></div></div><div class="registration-layout"><section class="registration-methods"><div class="registration-options" role="group" aria-label="물품 등록 방식">${Object.entries(registrationModes).map(([mode,label])=>`<button type="button" data-action="registration-mode" data-id="${mode}" aria-controls="registration-content" aria-pressed="${registrationMode===mode}" ${registrationBusy?'disabled':''}><span>${label}</span><span aria-hidden="true">→</span></button>`).join('')}</div><small>등록 다음 날부터 가격에 따라<br>3일, 7일, 14일 동안 생각해 봐요.</small></section><div id="registration-content">${registrationContent()}</div></div>`;
 }
-function registrationInput(fd) {
- const selected=aiDrafts.length?fd.getAll('included').map(Number):[-1];
- if(!selected.length||selected.length>20)throw Error('등록할 물건을 1~20개 선택해 주세요.');
- const chosen=fd.getAll('reason').map(String);if(!chosen.length)throw Error('구매 이유를 하나 이상 선택해 주세요.');
- const other=String(fd.get('other')||'').trim(),deadline=String(fd.get('deadline')||'');
- if(chosen.includes('기타')&&(!other||other.length>300))throw Error('기타 이유를 1~300자로 입력해 주세요.');
- if(chosen.includes('할인·한정 판매 때문에')&&(!/^\d{4}-\d{2}-\d{2}$/.test(deadline)||deadline<today()))throw Error('오늘 이후의 판매 마감일을 선택해 주세요.');
- const items=selected.map(n=>{const suffix=n<0?'':'-'+n,name=String(fd.get('name'+suffix)||'').trim(),price=getNumber(fd,'price'+suffix,true),category=String(fd.get('category'+suffix)),rawUrl=String(fd.get('url'+suffix)||'').trim();if(!name||name.length>120||!categories.includes(category))throw Error('물건 이름과 카테고리를 확인해 주세요.');return {id:uid(),name,price,category,reasons:chosen,url:rawUrl?productUrl(rawUrl):'',source:n<0?'MANUAL':aiDrafts[n].source||'SCREENSHOT',reasonOtherText:chosen.includes('기타')?other:undefined,saleEndsAt:chosen.includes('할인·한정 판매 때문에')?deadline:undefined,createdAt:today(),start:addDays(today(),1),days:duration(price),status:'active',answers:{},reflections:{}};});
- let review;
- if(chosen.includes('추가 할인을 받으려고')){const unit=fd.get('discountUnit')==='정액'?'WON':'PCT',value=getNumber(fd,'discountValue'),free=getNumber(fd,'discountFree');if(unit==='PCT'&&value>100)throw Error('할인율은 100% 이하여야 해요.');const needed=fd.getAll('needed').map(String),indexes=selected.flatMap((n,index)=>needed.includes(n<0?'manual':String(n))?[index]:[]),decision=fd.get('discountDecision')==='전체'?'ALL':'NEEDED';if(!indexes.length&&decision==='NEEDED')throw Error('필요한 물건을 하나 이상 선택해 주세요.');review={rule:{minimum_amount:getNumber(fd,'discountMin'),unit,value,shipping_fee:getNumber(fd,'discountShipping'),free_shipping_enabled:free>0,free_shipping_minimum:free||null},needed_item_indexes:indexes,decision};}
- return {items,review};
+export function registrationInput(fd,drafts=aiDrafts,date=today()) {
+ const selected=drafts.length?fd.getAll('included').map(Number):[-1];
+ if(!selected.length||selected.length>20||new Set(selected).size!==selected.length||drafts.length&&selected.some(n=>!Number.isInteger(n)||!drafts[n]))throw Error('등록할 물건을 1~20개 선택해 주세요.');
+ const items=selected.map(n=>{
+  const suffix=n<0?'':'-'+n,name=String(fd.get('name'+suffix)||'').trim(),price=getNumber(fd,'price'+suffix,true),category=String(fd.get('category'+suffix)),rawUrl=String(fd.get('url'+suffix)||'').trim();
+  if(!name||name.length>120||!categories.includes(category))throw Error('물건 이름과 카테고리를 확인해 주세요.');
+  const chosen=fd.getAll('reason'+suffix).map(String),other=String(fd.get('other'+suffix)||'').trim(),deadline=String(fd.get('deadline'+suffix)||'');
+  if(!chosen.length||chosen.some(r=>!reasons.includes(r)))throw Error(`${name}: 구매 이유를 하나 이상 선택해 주세요.`);
+  if(chosen.includes('기타')&&(!other||other.length>300))throw Error(`${name}: 기타 이유를 1~300자로 입력해 주세요.`);
+  if(chosen.includes('할인·한정 판매 때문에')&&(!/^\d{4}-\d{2}-\d{2}$/.test(deadline)||deadline<date||!Number.isFinite(Date.parse(deadline))||new Date(deadline).toISOString().slice(0,10)!==deadline))throw Error(`${name}: 오늘 이후의 판매 마감일을 선택해 주세요.`);
+  return {id:uid(),name,price,category,reasons:chosen,url:rawUrl?productUrl(rawUrl):'',source:n<0?'MANUAL':drafts[n].source||'SCREENSHOT',reasonOtherText:chosen.includes('기타')?other:undefined,saleEndsAt:chosen.includes('할인·한정 판매 때문에')?deadline:undefined,createdAt:date,start:addDays(date,1),days:duration(price),status:'active',answers:{},reflections:{}};
+ });
+ return {items,selected,needsDiscount:items.some(i=>i.reasons.includes('추가 할인을 받으려고'))};
+}
+export function registrationDiscountInput(fd,selected,decision='ALL') {
+ const unit=String(fd.get('discountUnit')),value=getNumber(fd,'discountValue'),freeOn=fd.has('discountFreeOn');
+ if(!['PCT','WON'].includes(unit)||unit==='PCT'&&value>100)throw Error('할인율은 0~100% 사이로 입력해 주세요.');
+ if(!['NEEDED','ALL'].includes(decision))throw Error('등록할 물건을 선택해 주세요.');
+ const needed=fd.getAll('needed').map(String);
+ return {rule:{minimum_amount:getNumber(fd,'discountMin'),unit,value,shipping_fee:getNumber(fd,'discountShipping'),free_shipping_enabled:freeOn,free_shipping_minimum:freeOn?getNumber(fd,'discountFree',true):null},needed_item_indexes:selected.flatMap((n,index)=>needed.includes(String(n))?[index]:[]),decision};
+}
+export function registrationDiscountComparison(items,review) {
+ const r=review.rule,checkout=sum=>{const discount=sum>=r.minimum_amount?Math.min(sum,r.unit==='PCT'?Math.round(sum*r.value/100):r.value):0,shipping=sum&&!(r.free_shipping_enabled&&sum>=r.free_shipping_minimum)?r.shipping_fee:0;return {product:sum,discount,shipping,pay:sum-discount+shipping};};
+ const all=checkout(items.reduce((sum,i)=>sum+i.price,0)),needed=checkout(items.filter((_,n)=>review.needed_item_indexes.includes(n)).reduce((sum,i)=>sum+i.price,0));
+ const trap=needed.product!==all.product&&all.pay>needed.pay;
+ return {all,needed,trap,extra:Math.max(0,all.pay-needed.pay),saved:all.discount,noDiscount:all.product+all.shipping,remaining:r.free_shipping_enabled?Math.max(0,r.free_shipping_minimum-all.product):0,shippingSaving:r.free_shipping_enabled?Math.max(0,checkout(r.free_shipping_minimum).pay-all.pay):0};
+}
+function discountResult(items,review) {
+ const c=registrationDiscountComparison(items,review),breakdown=b=>b.product?`상품 ${won(b.product)} − 할인 ${won(b.discount)}${b.shipping?' + 배송비 '+won(b.shipping):' · 무료배송'}`:'담은 물건이 없어요';
+ const first=c.trap?c.needed:{...c.all,discount:0,pay:c.noDiscount};
+ return `<section class="discount-verdict ${c.trap?'is-trap':''}"><h3><span class="discount-step">3</span>${c.trap?'할인 함정이에요':'똑똑한 묶음이에요'}</h3><h2>${c.trap?'할인 받으려고':'어차피 살 물건이라'}<br><strong>${won(c.trap?c.extra:c.saved)}</strong>${c.trap?'을 더 쓰게 돼요':' 아꼈어요'}</h2><dl class="discount-costs"><div><dt>${c.trap?'필요한 것만 사면':'할인 없이 샀다면'}</dt><dd>${won(first.pay)}</dd><small>${breakdown(first)}</small></div><div><dt>${c.trap?'할인 받으려고 다 사면':'지금 결제 금액'}</dt><dd>${won(c.all.pay)}</dd><small>${breakdown(c.all)}</small></div></dl></section>${review.rule.free_shipping_enabled?`<p class="discount-shipping-note">${c.remaining?`무료배송까지 ${won(c.remaining)} 더 담아야 해요. ${c.shippingSaving?`배송비 ${won(review.rule.shipping_fee)}을 내는 쪽이 ${won(c.shippingSaving)} 아껴요.`:'할인 조건을 포함한 최종 결제 금액을 비교해 주세요.'}`:'무료배송 조건을 채웠어요.'}</p>`:''}`;
+}
+function showRegistrationDiscount(form,{items,selected}) {
+ const panel=form.querySelector('#registration-discount'),previous=new FormData(form),oldRows=new Set(Array.from(panel.querySelectorAll('[name="needed"]'),input=>input.getAttribute('value')));
+ panel.innerHTML=`${button('← 물건 정보 수정','registration-back','','text-link')}<section class="discount-section"><h3><span class="discount-step">1</span>전체 할인율을 작성해 주세요</h3><div class="discount-rule-line"><span class="discount-inline"><input name="discountMin" value="30000" inputmode="numeric" aria-label="할인 최소 금액"><span>원 이상,</span></span><span class="discount-inline"><input name="discountValue" value="10" inputmode="numeric" aria-label="할인 값"><span class="discount-units" role="group" aria-label="할인 단위"><label><input type="radio" name="discountUnit" value="PCT" checked><span>%</span></label><label><input type="radio" name="discountUnit" value="WON"><span>원</span></label></span><span>할인</span></span></div><label class="discount-switch"><strong>무료배송</strong><input type="checkbox" role="switch" name="discountFreeOn" checked></label><div data-free-threshold>${field('discountFree','무료배송 최소 금액 (원)','text',40000,'inputmode="numeric"')}<small>이 금액 이상 사면 무료배송이에요.</small></div>${field('discountShipping','기본 배송비 (원)','text',3000,'inputmode="numeric"')}<small>무료배송 기준에 못 미칠 때의 배송비도 입력해 주세요.</small></section><section class="discount-section"><h3><span class="discount-step">2</span>할인이 없어도 살 물건만 켜 주세요</h3>${items.map((i,n)=>{const key=String(selected[n]),added=i.reasons.includes('추가 할인을 받으려고'),on=oldRows.has(key)?previous.getAll('needed').includes(key):!added;return `<label class="discount-item discount-switch"><span><strong>${esc(i.name)}</strong><small>${won(i.price)} · <span class="${added?'discount-added':''}">${added?'할인 때문에 담은 물건':'원래 사려던 물건'}</span></small></span><input type="checkbox" role="switch" name="needed" value="${key}" aria-label="${esc(i.name)} 할인 없이도 살 물건" ${on?'checked':''}></label>`;}).join('')}</section><div id="registration-comparison" aria-live="polite" aria-atomic="true"></div><div class="discount-actions"><button type="submit" class="primary" name="discountDecision" value="NEEDED">필요한 것만 등록하기</button><button type="submit" name="discountDecision" value="ALL">그래도 모두 등록하기</button></div><small>선택한 상품을 시뮬레이션에 등록해요. 실제 구매나 결제는 진행되지 않아요.</small>`;
+ if(previous.has('discountMin'))for(const input of panel.querySelectorAll('input[name^="discount"]')){
+  if(input instanceof HTMLInputElement){if(['checkbox','radio'].includes(input.type))input.checked=previous.getAll(input.name).includes(input.value);else if(previous.has(input.name))input.value=String(previous.get(input.name));}
+ }
+ setRegistrationStep(form,'discount');refreshRegistration(form);
+}
+function setRegistrationStep(form,step) {
+ form.dataset.step=step;form.querySelector('#registration-editor').hidden=step==='discount';form.querySelector('#registration-discount').hidden=step!=='discount';form.querySelector('.registration-next').hidden=step==='discount';
+ const screen=form.closest('.registration-screen'),heading=screen.querySelector('h2');heading.textContent=step==='discount'?'할인 함정 확인':registrationMode==='manual'?'물건 정보 직접 입력':'가져온 물건 확인';
+ const extra=screen.querySelector('.registration-import');if(extra)extra.hidden=step==='discount';
+ form.querySelector('.form-error').textContent='';heading.focus();heading.scrollIntoView({block:'start'});
 }
 function refreshRegistration(form) {
- const fd=new FormData(form),rs=fd.getAll('reason');
- query('#reason-other').hidden=!rs.includes('기타');query('#reason-deadline').hidden=!rs.includes('할인·한정 판매 때문에');query('#registration-discount').hidden=!rs.includes('추가 할인을 받으려고');
- if(rs.includes('추가 할인을 받으려고'))try{const {items,review}=registrationInput(fd),checkout=amount=>amount?Math.max(0,amount-(amount>=review.rule.minimum_amount?Math.min(amount,review.rule.unit==='PCT'?Math.round(amount*review.rule.value/100):review.rule.value):0))+(review.rule.free_shipping_enabled&&amount>=review.rule.free_shipping_minimum?0:review.rule.shipping_fee):0;const all=checkout(items.reduce((n,i)=>n+i.price,0)),needed=checkout(items.filter((_,n)=>review.needed_item_indexes.includes(n)).reduce((n,i)=>n+i.price,0));query('#registration-comparison').textContent=`필요한 것만 ${won(needed)} · 전체 ${won(all)}${all>needed?' · 전체를 사면 '+won(all-needed)+' 더 써요.':''}`;}catch{query('#registration-comparison').textContent='물건 정보와 할인 조건을 입력하면 결제액을 비교해요.';}
+ const fd=new FormData(form);
+ form.querySelectorAll('.item-reasons').forEach(group=>{const rs=fd.getAll('reason'+group.getAttribute('data-suffix'));group.querySelector('[data-reason-other]').hidden=!rs.includes('기타');group.querySelector('[data-reason-deadline]').hidden=!rs.includes('할인·한정 판매 때문에');});
+ const selected=aiDrafts.length?fd.getAll('included').map(Number):[-1],needsDiscount=selected.some(n=>fd.getAll('reason'+(n<0?'':'-'+n)).includes('추가 할인을 받으려고'));
+ form.querySelector('.registration-next').textContent=needsDiscount?'다음 · 할인 함정 확인':'확인한 물건 등록하기';
+ if(form.dataset.step!=='discount')return;
+ form.querySelector('[data-free-threshold]').hidden=!fd.has('discountFreeOn');
+ const result=form.querySelector('#registration-comparison'),buttons=form.querySelectorAll('.discount-actions button');
+ try{
+  const {items}=registrationInput(fd),review=registrationDiscountInput(fd,selected),c=registrationDiscountComparison(items,review);
+  result.innerHTML=discountResult(items,review);buttons.forEach(b=>{b.disabled=registrationBusy;});
+  const needed=form.querySelector('[value="NEEDED"]'),all=form.querySelector('[value="ALL"]');
+  needed.textContent=review.needed_item_indexes.length?`필요한 것만 ${won(c.needed.pay)} · 등록하기`:'모두 제외하고 마치기';
+  all.textContent=c.trap?'그래도 모두 등록하기':'이대로 모두 등록하기';
+ }catch(e){result.innerHTML=`<p class="discount-validation">${esc(e.message)}</p>`;buttons.forEach(b=>{b.disabled=true;});}
 }
 async function analyzeImages(indexes) {
  for(const n of indexes){const entry=imageImports[n];try{const body=new FormData();body.append('image',entry.file);entry.rows=(await aiRequest('/cart-extractions',body)).map(d=>({...d,source:'SCREENSHOT'}));entry.error='';}catch(e){entry.error=e.message;}}
@@ -440,14 +492,30 @@ if(typeof document!=='undefined') {
   category.form.querySelector('#category-hint-'+category.name.replace('category','name')).textContent='직접 선택한 카테고리로 등록해요.';
  });
  document.addEventListener('submit',event=>{const form=event.target;if(form instanceof HTMLFormElement&&form.id==='add-form')form.querySelectorAll('input[name="name"],input[name^="name-"]').forEach(input=>{cancelCategoryRecommendation(input);const hint=form.querySelector('#category-hint-'+input.getAttribute('name'));if(hint)hint.textContent='선택한 카테고리로 등록해요.';});});
- document.addEventListener('input',event=>{if(event.target instanceof Element&&event.target.closest('#add-form'))refreshRegistration(event.target.closest('form'));});
+ document.addEventListener('input',event=>{
+  const input=event.target;if(!(input instanceof Element)||!input.closest('#add-form'))return;
+  const form=input.closest('form');if(registrationBusy)return;
+  if(input instanceof HTMLInputElement&&input.name==='discountUnit'){const value=form.elements.namedItem('discountValue');if(value instanceof HTMLInputElement)value.value=input.value==='WON'?'3000':'10';}
+  refreshRegistration(form);
+ });
  document.addEventListener('input',event=>{if(event.target instanceof Element && event.target.closest('#app form'))dirty=true;if(!(event.target instanceof HTMLInputElement))return;const form=event.target.closest('#goal-decision-form');if(!(form instanceof HTMLFormElement))return;if(event.target.name==='choice')goalChoice=event.target.value;query('#goal-custom-fields').hidden=goalChoice!=='custom';const g=state.goals.find(g=>g.id===form.dataset.goalId&&g.active&&!g.achieved);if(!g)return;const chosen=goalDecisionValue(form);query('#goal-impact').innerHTML=goalImpact(g,chosen.name,chosen.amount);query('#goal-decision-feedback').textContent='';form.querySelectorAll('button[type="submit"]').forEach(b=>{if(b instanceof HTMLButtonElement)b.disabled=!chosen.name||chosen.name.length>120||!validAmount(chosen.amount)||chosen.amount<=0;});});
  window.addEventListener('beforeunload',event=>{if(dirty){event.preventDefault();event.returnValue='';}});
  document.addEventListener('click',event=>{if(!(event.target instanceof Element))return;const skip=event.target.closest('a[href="#bob-main"]');if(skip){event.preventDefault();query('#bob-main')?.focus();return;}if(!dirty)return;const anchor=event.target.closest('a[href^="#/"]');if(!anchor||anchor.getAttribute('href')===location.hash)return;event.preventDefault();event.stopImmediatePropagation();confirmAction('입력 중인 내용을 버릴까요?','저장하지 않은 입력이 사라져요.',()=>{dirty=false;location.hash=anchor.getAttribute('href');});},true);
- document.addEventListener('submit',async event=>{const form=event.target;if(!(form instanceof HTMLFormElement)||!form.closest('#app'))return;event.preventDefault();const fd=new FormData(form),error=/** @type {HTMLElement} */(form.querySelector('.form-error')),submit=/** @type {HTMLButtonElement} */(form.querySelector('[type="submit"]'));error.textContent='';try {
+ document.addEventListener('submit',async event=>{const form=event.target;if(!(form instanceof HTMLFormElement)||!form.closest('#app'))return;event.preventDefault();const fd=new FormData(form),error=/** @type {HTMLElement} */(form.querySelector('.form-error')),submit=/** @type {HTMLButtonElement} */(event.submitter instanceof HTMLButtonElement?event.submitter:form.querySelector('[type="submit"]'));error.textContent='';try {
   switch(form.id){
    case 'reflection-form':{const q=currentReflection()?.question;if(!q)throw Error('질문을 다시 확인해 주세요.');let value;if(event.submitter instanceof HTMLButtonElement&&event.submitter.value==='UNSURE')value={choice_code:'UNSURE'};else if(q.spec.type==='INTEGER'){const raw=String(fd.get('number')||'').trim();if(!/^\d+$/.test(raw))throw Error('숫자로 답변을 입력해 주세요.');value={number_value:Number(raw)};}else if(q.spec.type==='TEXT')value={text_value:String(fd.get('text')||'').trim()};else if(q.spec.type==='OBJECT')value={object_value:Object.fromEntries(Object.keys(q.spec.fields).map(k=>[k,String(fd.get('object-'+k)||'')]))};else value={choice_code:String(fd.get('choice')||'')};saveCurrentAnswer(value);break;}
-   case 'add-form':{if(submit.disabled)return;const {items,review}=registrationInput(fd);submit.disabled=true;setRegistrationBusy(true);submit.textContent='등록 확인 중…';try{const saved=await services.register(items,review);aiDrafts=[];imageImports=[];registrationMode='';registrationPanels.clear();dirty=false;location.hash='#/WebItem/'+saved[0].id;}catch(e){if(state.pendingRegistration){render();notify(e.message);}else{submit.textContent='물건 등록';throw e;}}break;}
+   case 'add-form':{
+    if(registrationBusy||submit.disabled)return;
+    const input=registrationInput(fd);
+    if(input.needsDiscount&&form.dataset.step!=='discount'){showRegistrationDiscount(form,input);break;}
+    const review=input.needsDiscount?registrationDiscountInput(fd,input.selected,event.submitter instanceof HTMLButtonElement?event.submitter.value:''):undefined;
+    const controls=Array.from(form.elements).filter(el=>el instanceof HTMLInputElement||el instanceof HTMLSelectElement||el instanceof HTMLButtonElement);
+    const disabled=controls.map(el=>el.disabled);controls.forEach(el=>{el.disabled=true;});setRegistrationBusy(true);submit.textContent='등록 확인 중…';
+    try{const saved=await services.register(input.items,review);finishRegistration(saved);}
+    catch(e){if(state.pendingRegistration){render();notify(e.message);}else throw e;}
+    finally{controls.forEach((el,n)=>{el.disabled=disabled[n];});setRegistrationBusy(false);if(form.isConnected)refreshRegistration(form);}
+    break;
+   }
    case 'goal-form':{if(submit.disabled)return;const name=getName(fd),price=getNumber(fd,'price',true),url=safeUrl(String(fd.get('url')||'').trim());submit.disabled=true;const image=await readGoalImage(fd.get('image'));commit(s=>{replaceGoal(s,{id:uid(),name,price,image,url},today(),fd.has('carry')?getNumber(fd,'carry'):0);},'');goalCreating=false;goalChoice='1';goalDecisionFeedback='';render();break;}
    case 'goal-image-form':{if(submit.disabled)return;const id=state.goals.find(g=>g.active)?.id;submit.disabled=true;const image=await readGoalImage(fd.get('image'));if(!image)throw Error('저장할 이미지를 선택해 주세요.');commit(s=>{const g=s.goals.find(g=>g.id===id);if(!g)throw Error('목표를 찾지 못했어요.');g.image=image;});break;}
    case 'goal-decision-form':{const chosen=goalDecisionValue(form),decision=event.submitter instanceof HTMLButtonElement?event.submitter.value:'';const oldChoice=goalChoice;goalChoice='';try{commit(s=>recordGoalDecision(s,form.dataset.goalId,chosen.name,chosen.amount,decision),'');}catch(e){goalChoice=oldChoice;throw e;}if(state.goals.find(g=>g.id===form.dataset.goalId)?.achieved)goalPage=Math.floor((state.goals.filter(g=>g.achieved).length-1)/9);goalDecisionFeedback=decision==='resisted'?`${won(chosen.amount)}을 참았어요. 목표를 위한 예산을 지켰어요.`:`${won(chosen.amount)}을 가계부에 기록했어요.`;render();query('#goal-decision-feedback')?.focus({preventScroll:true});break;}
@@ -462,8 +530,9 @@ if(typeof document!=='undefined') {
  }catch(e){error.textContent=e.name==='AbortError'?'분석 시간이 초과됐어요. 다시 시도해 주세요.':e.message;error.tabIndex=-1;error.focus();}finally{if(['ai-form','add-form'].includes(form.id))setRegistrationBusy(false);if(submit?.isConnected){submit.disabled=false;if(form.id==='ai-form')submit.textContent=registrationMode==='image'?'캡처에서 물건 가져오기':'링크에서 물건 가져오기';}}});
  document.addEventListener('click',event=>{if(!(event.target instanceof Element))return;const b=/** @type {HTMLElement} */(event.target.closest('[data-action]'));if(!b||!b.closest('#app'))return;const action=b.dataset.action,id=b.dataset.id,i=state.items.find(i=>i.id===id);try {
   if(action==='registration-mode')switchRegistrationMode(id);
+  else if(action==='registration-back'){if(registrationBusy)return;const form=b.closest('form');setRegistrationStep(form,'items');refreshRegistration(form);}
   else if(action==='restart-import'){if(registrationBusy)return;const restart=()=>{aiDrafts=[];imageImports=[];registrationPanels.delete(registrationMode);render();dirty=registrationPanels.size>0;query('#registration-content h2')?.focus({preventScroll:true});};if(dirty)confirmAction('다시 가져올까요?','현재 확인 중인 물건 대신 새 이미지나 링크에서 가져와요.',restart);else restart();}
-  else if(action==='retry-registration'){b.setAttribute('disabled','');void services.register([],null).then(saved=>{aiDrafts=[];imageImports=[];registrationMode='';registrationPanels.clear();location.hash='#/WebItem/'+saved[0].id;}).catch(e=>{b.removeAttribute('disabled');notify(e.message);});}
+  else if(action==='retry-registration'){b.setAttribute('disabled','');void services.register([],null).then(finishRegistration).catch(e=>{b.removeAttribute('disabled');notify(e.message);});}
   else if(action==='retry-image'){if(registrationBusy)return;const previousDrafts=aiDrafts,form=/** @type {HTMLFormElement} */(query('#add-form')),data=form?new FormData(form):null;setRegistrationBusy(true);void analyzeImages([Number(id)]).then(()=>{if(location.hash==='#/WebAdd'){render();restoreRegistrationFields(query('#add-form'),data,previousDrafts);dirty=true;}}).catch(e=>notify(e.message)).finally(()=>setRegistrationBusy(false));}
   else if(action==='select-home'){selectedHomeItem=id;render();const selected=Array.from(document.querySelectorAll('button[data-action="select-home"]')).find(el=>el.getAttribute('data-id')===id);if(selected instanceof HTMLElement)selected.focus({preventScroll:true});}
   else if(action==='clear-home'){selectedHomeItem='';render();query('#home-detail').tabIndex=-1;query('#home-detail').focus({preventScroll:true});}

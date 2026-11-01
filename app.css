@@ -375,7 +375,7 @@
 #app .answer-edit{position:absolute;right:12px;bottom:7px;padding:3px 8px;font-size:11px;border:0;background:transparent;text-decoration:underline;text-underline-offset:3px}
 #app .answered-badge{max-width:200px;white-space:normal;overflow-wrap:anywhere}
 #app .draft-row{padding:16px;border:1px solid var(--line);border-radius:8px;margin:18px 0}
-#app .draft-row input[type=checkbox],#app #registration-discount input[type=checkbox]{width:16px;height:16px;accent-color:var(--brown);margin-right:6px}
+#app .draft-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--brown);margin-right:6px}
 #app .draft-row legend label{display:flex;align-items:center;margin:0}
 #app .report-month{display:flex;flex-flow:row nowrap;align-items:center;justify-content:flex-end;gap:16px;margin:0 0 16px}
 #app .report-month button{min-width:44px;padding:8px}
@@ -400,4 +400,47 @@
 #app .registration-screen h2{margin-top:0;font-size:22px}
 #app .registration-screen input[type=file]{white-space:normal;max-width:100%}
 #app .registration-screen #image-import-status p{overflow-wrap:anywhere}
+#app #registration-editor{margin:0;min-width:0}
+#app #registration-discount[hidden],#app #registration-editor[hidden],#app .registration-next[hidden]{display:none}
+#app .draft-row legend label{flex-direction:row}
+#app .item-reasons{min-width:0}
+#app .discount-section{padding:22px;margin:18px 0;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+#app .discount-section h3,#app .discount-verdict h3{display:flex;align-items:center;gap:10px;margin:0 0 20px;font-size:16px}
+#app .discount-step{display:inline-flex;align-items:center;justify-content:center;flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:white}
+#app .discount-rule-line{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-weight:600}
+#app .discount-inline{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;max-width:100%}
+#app .discount-inline input:not([type=radio]){width:110px;min-width:0;text-align:right;font-weight:700;background:var(--cream)}
+#app .discount-inline input[name=discountValue]{width:80px}
+#app .discount-units{display:inline-flex;padding:4px;border-radius:8px;background:var(--cream)}
+#app .discount-units label{margin:0;position:relative;cursor:pointer}
+#app .discount-units input{position:absolute;opacity:0;width:1px;height:1px}
+#app .discount-units span{display:flex;min-width:40px;min-height:40px;align-items:center;justify-content:center;border-radius:6px;color:var(--muted)}
+#app .discount-units input:checked+span{background:var(--paper);color:var(--ink)}
+#app .discount-units input:focus-visible+span{outline:3px solid var(--brown);outline-offset:2px}
+#app label.discount-switch{flex-direction:row;justify-content:space-between;align-items:center;gap:16px;cursor:pointer}
+#app .discount-switch input[type=checkbox]{appearance:none;position:relative;width:44px;height:28px;flex:none;border-radius:20px;border:1px solid var(--line);background:var(--line);margin:0;cursor:pointer}
+#app .discount-switch input[type=checkbox]::after{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--paper)}
+#app .discount-switch input[type=checkbox]:checked{background:var(--brown);border-color:var(--brown)}
+#app .discount-switch input[type=checkbox]:checked::after{left:19px}
+#app .discount-switch input:hover{filter:brightness(.96)}
+#app .discount-item{padding:16px 0;margin:0!important;border-bottom:1px solid var(--line)}
+#app .discount-item:last-child{border-bottom:0}
+#app .discount-item>span{min-width:0;overflow-wrap:anywhere}
+#app .discount-item small{display:block;margin-top:4px;font-weight:400}
+#app .discount-added{color:#A74E27;font-weight:600}
+#app .discount-verdict{margin-top:24px;padding:22px;background:#FFF0CC;border-radius:10px}
+#app .discount-verdict.is-trap{background:#FCF0E6}
+#app .discount-verdict h2{font-size:24px;line-height:1.5;overflow-wrap:anywhere}
+#app .discount-verdict h2 strong{color:var(--brown)}
+#app .discount-verdict.is-trap h2 strong{color:#A74E27}
+#app .discount-costs{background:var(--paper);border-radius:8px;padding:16px;margin:18px 0 0}
+#app .discount-costs>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:10px 0}
+#app .discount-costs dd{margin:0;font-weight:700;overflow-wrap:anywhere}
+#app .discount-costs small{grid-column:1/-1;font-size:11px}
+#app .discount-actions{display:grid;gap:10px;margin:22px 0 12px}
+#app .discount-validation{color:#a52b20}
+#app .registration-screen:has(form[data-step=discount]) .registration-import{display:none}
+@media(forced-colors:active){#app .discount-switch input[type=checkbox]{appearance:auto}#app .discount-switch input[type=checkbox]::after{display:none}}
 @media(max-width:900px){#app .registration-layout{grid-template-columns:1fr;gap:24px;padding-top:0}#app .registration-methods{position:static;padding:0}#app .page-title.registration-title{min-height:0;margin-bottom:24px}#app .registration-options{margin-bottom:16px}#app .registration-screen{padding:22px 18px}}
+
+#app .registration-screen:has(form[data-step=discount]){background:transparent;border:0;padding:0}
