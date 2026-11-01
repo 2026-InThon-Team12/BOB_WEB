@@ -2,9 +2,30 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createServices} from './sync.js';
 import {createApiClient,productUrl,remoteItem} from './api.js';
+import {validate} from './app.js';
 const item=()=>({id:'i',name:'컵',price:20000,category:'생활용품',reasons:['실제로 필요해서'],start:'2026-11-02',days:3,status:'active',answers:{},reflections:{}});
 const row=(decision=null)=>({id:'remote',decision,simulation:{id:'sim',start_date:'2026-11-02',end_date_exclusive:'2026-11-05',duration_days:3},purchase:decision==='BUY'?{id:'purchase',purchased_on:'2026-11-05'}:null});
-function setup(request,date='2026-11-05') {let s={apiBase:'https://bob-be.vercel.app',items:[],expenses:[]};return {get:()=>s,service:createServices(()=>s,fn=>{const next=structuredClone(s);fn(next);s=next;},()=>date,request)};}
+function setup(request,date='2026-11-05') {let s={version:2,apiBase:'https://bob-be.vercel.app',items:[],expenses:[],goals:[],impulses:[],incomes:[],budgets:{}};return {get:()=>s,service:createServices(()=>s,fn=>{const next=structuredClone(s);fn(next);s=validate(next);},()=>date,request)};}
+
+for(const dates of [[],['2026-11-02']])test('early Buy saves truncated observation dates and recovers a committed purchase: '+dates.length,async()=>{
+ const response={...row('BUY'),simulation:{...row().simulation,observation_dates:dates},purchase:{id:'purchase',purchased_on:dates.length?'2026-11-03':'2026-11-01'}};
+ let calls=0;
+ const h=setup(async()=>{calls++;return response;},'2026-11-03');
+ h.get().items.push(remoteItem(item(),{...row(),simulation:{...row().simulation,observation_dates:['2026-11-02','2026-11-03','2026-11-04']}}));
+ await Promise.all([h.service.decide('i','buy'),h.service.decide('i','buy')]);
+ const saved=h.get();assert.equal(calls,1);assert.equal(saved.items[0].status,'buy');assert.equal(saved.items[0].days,3);assert.deepEqual(saved.items[0].observationDates,dates);
+ assert.equal(saved.items[0].purchaseId,'purchase');assert.equal(saved.expenses.length,1);assert.equal(saved.expenses[0].date,response.purchase.purchased_on);assert.equal(saved.expenses[0].amount,20000);
+ assert.deepEqual(validate(JSON.parse(JSON.stringify(saved))),saved);
+ await assert.rejects(h.service.decide('i','buy'));assert.equal(saved.expenses.length,1);
+});
+
+test('observation validation still rejects incomplete active schedules, duplicates, invalid dates and excessive dates',()=>{
+ const base={version:2,items:[item()],goals:[],impulses:[],expenses:[],budgets:{}};
+ for(const [status,dates] of [['active',[]],['buy',['2026-11-02','2026-11-02']],['bye',['2026-02-30']],['buy',['2026-11-02','2026-11-03','2026-11-04','2026-11-05']]]){
+  const s=structuredClone(base);Object.assign(s.items[0],{status,observationDates:dates});assert.throws(()=>validate(s),/관찰 날짜/);
+ }
+ const s=structuredClone(base);Object.assign(s.items[0],{status:'bye',observationDates:['2026-11-02']});assert.doesNotThrow(()=>validate(s));
+});
 test('registration retry keeps the same idempotency key and duplicate clicks share a request',async()=>{
  let count=0;const keys=[];const h=setup(async(path,body,base,opts)=>{keys.push(opts.idempotencyKey);count++;if(count===1)throw Error('offline');await new Promise(r=>setTimeout(r,5));return {items:[row()]};});
  await assert.rejects(h.service.register([item()],null));assert.equal(h.get().items.length,0);assert.ok(h.get().pendingRegistration);

@@ -32,7 +32,8 @@ export function validate(s) {
   const validDate = date => typeof date==='string'&&/^20\d{2}-\d{2}-\d{2}$/.test(date)&&Number.isFinite(Date.parse(date))&&new Date(date+'T00:00:00Z').toISOString().slice(0,10)===date;
   for(const i of s.items){
     if(i.url&&(typeof i.url!=='string'||!safeUrl(i.url)))throw Error('상품 링크를 확인해 주세요.');
-    if(!validDate(i.start)||i.endDate&&!validDate(i.endDate)||i.decided&&!validDate(i.decided)||i.saleEndsAt&&!validDate(i.saleEndsAt)||i.observationDates&&(!Array.isArray(i.observationDates)||i.observationDates.length!==i.days||!i.observationDates.every(validDate)||new Set(i.observationDates).size!==i.days))throw Error('관찰 날짜 형식을 확인해 주세요.');
+    // A final decision can end observation before the originally planned duration.
+    if(!validDate(i.start)||i.endDate&&!validDate(i.endDate)||i.decided&&!validDate(i.decided)||i.saleEndsAt&&!validDate(i.saleEndsAt)||i.observationDates&&(!Array.isArray(i.observationDates)||i.observationDates.length>i.days||(i.status==='active'&&i.observationDates.length!==i.days)||!i.observationDates.every(validDate)||new Set(i.observationDates).size!==i.observationDates.length))throw Error('관찰 날짜 형식을 확인해 주세요.');
     if(i.reflections&&typeof i.reflections!=='object')throw Error('답변 기록 형식을 확인해 주세요.');
     for(const [key,q] of Object.entries(i.reflections||{}))if(!/^(pre|post):/.test(key)||!validDate(key.slice(key.indexOf(':')+1))||typeof q.text!=='string'||!validSpec(q.spec)||(q.answer&&!validAnswer(q.spec,q.answer)))throw Error('질문과 답변 형식을 확인해 주세요.');
   }
