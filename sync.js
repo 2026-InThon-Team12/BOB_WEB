@@ -44,7 +44,7 @@ export function createServices(getState,write,today,request=createApiClient()) {
     }),
     decide:(id,action)=>single('decision:'+id,async()=>{
       let item=getState().items.find(i=>i.id===id);if(!item||item.status!=='active')throw Error('이미 결정한 물건이에요.');
-      const date=today();if(!['buy','bye','hold'].includes(action))throw Error('결정을 확인해 주세요.');if(action==='bye'&&item.remoteId&&!simulationReady(item,date))throw Error('서버에 연결된 물건은 시뮬레이션 종료 후 Bye를 선택할 수 있어요.');if(action==='hold'){const preview=structuredClone(item);holdItem(preview,date);}
+      const date=today();if(!['buy','bye','hold'].includes(action))throw Error('결정을 확인해 주세요.');if(action==='hold'){const preview=structuredClone(item);holdItem(preview,date);}
       if(simulationReady(item,date))await services.summarize(id);
       item=getState().items.find(i=>i.id===id);
       const proposed=structuredClone(item);if(action==='hold')holdItem(proposed,date);

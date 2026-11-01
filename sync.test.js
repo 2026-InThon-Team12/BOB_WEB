@@ -24,6 +24,24 @@ test('HOLD response preserves local observation gaps even when server omits date
  const h=setup(async(path)=>{if(path.endsWith('result-summary'))throw Error('no AI');return {...row('HOLD'),simulation:{...row().simulation,duration_days:10,end_date_exclusive:'2026-11-18'}};},'2026-11-10');h.get().items.push(remoteItem(item(),row()));
  await h.service.decide('i','hold');const i=h.get().items[0];assert.equal(i.status,'active');assert.equal(i.summary,undefined);assert.equal(i.observationDates.length,10);assert.equal(i.observationDates[3],'2026-11-11');assert.equal(i.endDate,'2026-11-18');
 });
+
+test('early remote Bye saves only after success, preserves answers, and creates no expense',async()=>{
+ let fail=true;const calls=[];
+ const h=setup(async(path,body,base,opts)=>{calls.push({path,body,opts});if(fail)throw Error('offline');return row('GIVE_UP');},'2026-11-03');
+ h.get().items.push(remoteItem({...item(),answers:{'2026-11-02':'yes'}},row()));
+ const before=structuredClone(h.get());
+ await assert.rejects(h.service.decide('i','bye'),/offline/);assert.deepEqual(h.get(),before);
+ fail=false;await h.service.decide('i','bye');
+ assert.equal(calls.length,2);assert.ok(calls.every(c=>c.path==='/items/remote/decision'&&c.body.decision==='GIVE_UP'&&c.opts.method==='PUT'));
+ assert.equal(calls[0].opts.idempotencyKey,calls[1].opts.idempotencyKey);
+ assert.equal(h.get().items[0].status,'bye');assert.deepEqual(h.get().items[0].answers,before.items[0].answers);assert.equal(h.get().expenses.length,0);
+ await assert.rejects(h.service.decide('i','bye'));assert.equal(calls.length,2);
+});
+
+test('early HOLD remains unavailable',async()=>{
+ let calls=0;const h=setup(async()=>{calls++;return row('HOLD');},'2026-11-03');h.get().items.push(remoteItem(item(),row()));
+ const before=structuredClone(h.get());await assert.rejects(h.service.decide('i','hold'));assert.equal(calls,0);assert.deepEqual(h.get(),before);
+});
 test('daily remote failure freezes one fallback per day; post questions use purchase endpoint',async()=>{
  const calls=[];const h=setup(async(path)=>{calls.push(path);throw Error('offline');},'2026-11-03');h.get().items.push(remoteItem(item(),row()));
  await Promise.all([h.service.question('i'),h.service.question('i')]);await h.service.question('i');assert.equal(calls.length,1);assert.ok(h.get().items[0].reflections['pre:2026-11-03'].fallback);
